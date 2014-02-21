@@ -47,6 +47,7 @@ GJAPI = {};
 // configuration attributes
 GJAPI.iGameID  = 0;    // # change this
 GJAPI.sGameKey = "";   // # change this too
+if(GJAPI.iGameID === 0 || GJAPI.sGameKey === "") alert("Game ID or Game Key missing!");
 
 GJAPI.sAPI    = "http://gamejolt.com/api/game/v1";
 GJAPI.sFormat = "json";
