@@ -7,6 +7,10 @@ As a gamer you are able to play every game on this site for free, rate them with
 And if your game is written in JavaScript, then **this library is able to connect your game with Game Jolt**.  
 (for other languages/engines/platforms take a look [here][2])
 
+> - automatic login and session handling when executed on Game Jolt
+> - interfaces to send scores and achieve trophies (most important functions)
+> - extremely easy to setup and use
+
 Documentation for the library can be found [here][3].
 
 [1]: http://gamejolt.com
