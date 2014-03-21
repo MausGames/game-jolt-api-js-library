@@ -58,19 +58,21 @@ GJAPI.sFormat = "json";
 GJAPI.asQueryParam = function()
 {
     var asOutput = {};
-    var asVar = window.location.search.substring(1).split("&");
+    var asList   = window.location.search.substring(1).split("&");
 
-    // get URL parameters (not very solid, but good enough)
-    for(var i = 0; i < asVar.length; ++i)
+    // loop through all parameters
+    for(var i = 0; i < asList.length; ++i)
     {
-        var asPair = asVar[i].split("=");
+        // seperate key from value
+        var asPair = asList[i].split("=");
 
+        // insert value into map
         if(typeof asOutput[asPair[0]] === "undefined")
-            asOutput[asPair[0]] = asPair[1];
+            asOutput[asPair[0]] = asPair[1];                          // create new entry
         else if(typeof asOutput[asPair[0]] === "string")
-            asOutput[asPair[0]] = [asOutput[asPair[0]], asPair[1]];
+            asOutput[asPair[0]] = [asOutput[asPair[0]], asPair[1]];   // extend into array
         else
-            asOutput[asPair[0]].push(asPair[1]);
+            asOutput[asPair[0]].push(asPair[1]);                      // append to array
     }
 
     return asOutput;
@@ -88,7 +90,7 @@ GJAPI.sUserToken = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_token"]    : "";
 
 // ****************************************************************
 // main functions
-GJAPI.SendRequest = function(sURL, bAsync, pCallback)
+GJAPI.SendRequest = function(sURL, pCallback)
 {
     if(!GJAPI.bActive) return;
 
@@ -106,7 +108,7 @@ GJAPI.SendRequest = function(sURL, bAsync, pCallback)
     {
         if(sResponse === "") return;
         if(pCallback) pCallback(eval("(" + sResponse + ")").response);
-    }, bAsync);
+    });
 };
 
 
@@ -119,7 +121,7 @@ GJAPI.SessionOpen = function()
     // send open-session request
     GJAPI.SendRequest("/sessions/open/"                +
                       "?username="   + GJAPI.sUserName +
-                      "&user_token=" + GJAPI.sUserToken, true);
+                      "&user_token=" + GJAPI.sUserToken);
 };
 
 GJAPI.SessionPing = function()
@@ -128,7 +130,7 @@ GJAPI.SessionPing = function()
     GJAPI.SendRequest("/sessions/ping/"                 +
                       "?username="   + GJAPI.sUserName  +
                       "&user_token=" + GJAPI.sUserToken +
-                      "&status="     + (GJAPI.bSessionActive ? "active" : "idle"), true);
+                      "&status="     + (GJAPI.bSessionActive ? "active" : "idle"));
 };
 
 GJAPI.SessionClose = function()
@@ -136,7 +138,7 @@ GJAPI.SessionClose = function()
     // send close-session request
     GJAPI.SendRequest("/sessions/close/"               +
                       "?username="   + GJAPI.sUserName +
-                      "&user_token=" + GJAPI.sUserToken, true);
+                      "&user_token=" + GJAPI.sUserToken);
 };
 
 if(GJAPI.bActive)
@@ -150,16 +152,16 @@ if(GJAPI.bActive)
 
 // ****************************************************************
 // score functions
-GJAPI.ScoreAdd = function(iScoreTable, iSortValue, sScoreText, sExtraData, pCallback)
+GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)
 {
     // send add-score request
-    GJAPI.SendRequest("/scores/add/"                                    +
-                      "?username="   + GJAPI.sUserName                  +
-                      "&user_token=" + GJAPI.sUserToken                 +
-                      (iScoreTable ? ("&table_id=" + iScoreTable) : "") +
-                      "&sort="       + iSortValue                       +
-                      "&score="      + sScoreText                       +
-                      (sExtraData ? ("&extra_data=" + sExtraData) : ""), true, pCallback);
+    GJAPI.SendRequest("/scores/add/"                                        +
+                      "?username="   + GJAPI.sUserName                      +
+                      "&user_token=" + GJAPI.sUserToken                     +
+                      (iScoreTableID ? ("&table_id=" + iScoreTableID) : "") +
+                      "&sort="       + iScoreValue                          +
+                      "&score="      + sScoreText                           +
+                      (sExtraData ? ("&extra_data=" + sExtraData) : ""), pCallback);
 };
 
 
@@ -177,7 +179,7 @@ GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
     GJAPI.SendRequest("/trophies/add-achieved/"         +
                       "?username="   + GJAPI.sUserName  +
                       "&user_token=" + GJAPI.sUserToken +
-                      "&trophy_id="  + iTrophyID, true, pCallback);
+                      "&trophy_id="  + iTrophyID, pCallback);
 };
 
 
@@ -204,7 +206,7 @@ THE SOFTWARE.
 
 ### Modified Version
 */
-function microAjax(c,b,a){var e={};e.bindFunction=function(g,f){return function(){return g.apply(f,[f])}};e.stateChange=function(f){if(e.request.readyState===4){e.callbackFunction(e.request.responseText)}};e.getRequest=function(){if(window.ActiveXObject){return new ActiveXObject("Microsoft.XMLHTTP")}else{if(window.XMLHttpRequest){return new XMLHttpRequest()}}return false};e.postBody=(arguments[2]||"");e.callbackFunction=b;e.url=c;e.request=e.getRequest();if(e.request){var d=e.request;d.onreadystatechange=e.bindFunction(e.stateChange,e);if(e.postBody!==""){d.open("POST",c,a);d.setRequestHeader("X-Requested-With","XMLHttpRequest");d.setRequestHeader("Content-Type","application/x-www-form-urlencoded")}else{d.open("GET",c,a)}d.send(e.postBody)}return e};
+function microAjax(c,b){var e={};e.bindFunction=function(g,f){return function(){return g.apply(f,[f])}};e.stateChange=function(f){if(e.request.readyState===4){e.callbackFunction(e.request.responseText)}};e.getRequest=function(){if(window.ActiveXObject){return new ActiveXObject("Microsoft.XMLHTTP")}else{if(window.XMLHttpRequest){return new XMLHttpRequest()}}return false};e.postBody=(arguments[2]||"");e.callbackFunction=b;e.url=c;e.request=e.getRequest();if(e.request){var d=e.request;d.onreadystatechange=e.bindFunction(e.stateChange,e);if(e.postBody!==""){d.open("POST",c);d.setRequestHeader("X-Requested-With","XMLHttpRequest");d.setRequestHeader("Content-Type","application/x-www-form-urlencoded")}else{d.open("GET",c)}d.send(e.postBody)}return e};
 
 /*
 * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message
