@@ -39,8 +39,8 @@
 //|   (http://gamejolt.com/terms/)                                                       |//
 //*--------------------------------------------------------------------------------------*//
 ////////////////////////////////////////////////////////////////////////////////////////////
-
-GJAPI = {};
+"use strict";
+var GJAPI = {};
 
 
 // ****************************************************************
@@ -92,8 +92,6 @@ GJAPI.sUserToken = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_token"]    : "";
 // main functions
 GJAPI.SendRequest = function(sURL, pCallback)
 {
-    if(!GJAPI.bActive) return;
-
     // add main URL, game ID and format type
     sURL = GJAPI.sAPI + sURL                        +
            ((sURL.indexOf('?') === -1) ? '?' : '&') +
@@ -154,6 +152,8 @@ if(GJAPI.bActive)
 // score functions
 GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)
 {
+    if(!GJAPI.bActive) return;
+
     // send add-score request
     GJAPI.SendRequest("/scores/add/"                                        +
                       "?username="   + GJAPI.sUserName                      +
@@ -171,6 +171,8 @@ GJAPI.abTrophyCache = {};
 
 GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
 {
+    if(!GJAPI.bActive) return;
+
     // check for already achieved trophy
     if(GJAPI.abTrophyCache[iTrophyID]) return;
     GJAPI.abTrophyCache[iTrophyID] = true;
