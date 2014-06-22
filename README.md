@@ -9,7 +9,7 @@ And if your game is written in JavaScript, then **this library is able to connec
 
 > - automatic login and session handling when executed on Game Jolt
 > - interfaces for user, trophy and score operations
-> - logging, parameter fetching and other supporting functions
+> - activity log, parameter fetch and other supporting functions
 > - extremely easy to setup and use
 
 Documentation for the library can be found [here][3].
