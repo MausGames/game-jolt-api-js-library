@@ -8,11 +8,12 @@ And if your game is written in JavaScript, then **this library is able to connec
 (for other languages/engines/platforms take a look [here][2])
 
 > - automatic login and session handling when executed on Game Jolt
-> - interfaces to send scores and achieve trophies (most important functions)
+> - interfaces for user, trophy and score operations
+> - logging, parameter fetching and other supporting functions
 > - extremely easy to setup and use
 
 Documentation for the library can be found [here][3].
 
 [1]: http://gamejolt.com
 [2]: http://gamejolt.com/developers/achievements-new/
-[3]: http://gamejolt.com/games/other/game-jolt-api-js-library/22948/
+[3]: http://www.maus-games.at/files/gamejolt/js/

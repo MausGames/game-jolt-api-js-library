@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>Game Jolt API JavaScript Library</title>
+
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+
+        <meta name="application-name" content="Game Jolt API JavaScript Library" />
+        <meta name="author" content="Martin Mauersics" />
+        <meta name="description" content="JavaScript Library to connect your game with Game Jolt, a host for free independently developed computer games." />
+        <meta name="keywords" content="game jolt, api, javascript, library, free, indie" />
+
+        <meta name="robots" content="index, follow" />
+
+        <link rel="stylesheet" href="style.css" type="text/css" />
+
+    </head>
+
+    <body  onload="InitBackground()">
+
+
+        <p style="text-align: center;">-- <a href="javascript:KillBackground()">Mute Background</a> --<br />
+        <script>
+            function KillBackground() {var p = document.getElementById("background"); p.parentElement.removeChild(p);}
+        </script>
+
+        
+        <!-- **************************************************************** -->
+        <!-- Background (not part of the Game Jolt API) -->
+        <iframe id="background" src="background/background.html"></iframe>
+        <script>
+            function InitBackground()
+            {
+                var WIND = document.getElementById("background").contentWindow.WIND;
+
+                // glue-code: forward movement from the main document to the iframe
+                document.addEventListener("mousemove", function(pCursor)
+                {
+                    // set mouse position relative to the canvas
+                    WIND.g_vMousePos[0] = pCursor.clientX*WIND.g_fMouseRange - WIND.g_fMouseRect[0];
+                    WIND.g_vMousePos[1] = pCursor.clientY*WIND.g_fMouseRange - WIND.g_fMouseRect[1];
+
+                    return true;
+                }, false);
+            }
+        </script>
+
+
+        <!-- **************************************************************** -->
+        <!-- Main -->
+        <div class="block">
+
+            <p><img src="gamejolt_js.png" alt="" title="(c) Game Jolt" /></p>
+            <h1 style="display: none;">Game Jolt API JavaScript Library</h1>
+
+            <h3>Installation</h3>
+
+            <p>The current library is available from <a href="http://gamejolt.com/games/other/game-jolt-api-js-library/22948/" target="_blank">Game Jolt</a> and contains all necessary files.<br />
+            To install the library into your game you have to</p>
+            <ol>
+                <li>add the normal or minified JS-file to your project directory</li>
+                <li>include (link) the library into your main HTML-file with <span class="code-simple">&nbsp;&lt;script src="gj-js-api.js"&gt;&lt;/script&gt;&nbsp;</span> (or copy &amp; paste the whole code)</li>
+                <li>insert your game ID and private key into the static properties <b>GJAPI.iGameID</b> and <b>GJAPI.sGameKey</b> (located on top)</li>
+            </ol>
+
+            <h3>Testing</h3>
+
+            <p>The library may not work properly on a local environment, because some browsers restrict scripted HTTP requests from a file:/// path.<br />
+            In this case you have to upload the project to Game Jolt, setup a local server process, or change the (browser-specific) configuration, to test it.</p>
+
+            <p>Still, to test the implementation offline, add <span class="code-simple">&nbsp;?gjapi_username=NAME&gjapi_token=TOKEN&nbsp;</span> (replaced with valid credentials) to your URL.<br />
+            If everything is fine, the library should automatically start a session, visible on the user-profile.</p>
+            <p><img src="img_success.png" alt="" /></p>
+
+        </div>
+
+
+        <!-- **************************************************************** -->
+        <!-- Users -->
+        <div class="block">
+
+            <h2>User Functions</h2>
+
+            <p><span class="func">GJAPI.FetchUserID</span> (iUserID, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iUserID</b> - Unique ID of an user</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.FetchUserID(1, function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.users) return;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.users[0].username + " - " + pResponse.users[0].developer_description);<br />
+            });</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.FetchUserName</span> (sUserName, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>sUserName</b> - Unique name of an user</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.FetchUserName("CROS", function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.users) return;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.users[0].username + " - " + pResponse.users[0].developer_description);<br />
+            });</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.FetchUserCurrent</span> (pCallback)</p>
+            <ul>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.FetchUserCurrent(function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.users) return;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.users[0].username + " - " + pResponse.users[0].developer_description);<br />
+            });</p>
+
+        </div>
+
+
+        <!-- **************************************************************** -->
+        <!-- Tropies -->
+        <div class="block">
+
+            <h2>Trophy Functions</h2>
+
+            <p><span class="func">GJAPI.TrophyAchieve</span> (iTrophyID, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iTrophyID</b> - Unique ID of a trophy</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.TrophyAchieve(1234, function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.TrophyAchieve(1234);</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.TrophyFetch</span> (iAchieved, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iAchieved</b> - Status of the requested trophies (GJAPI.TROPHY_*)</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p><span class="const">GJAPI.TROPHY_ONLY_ACHIEVED</span> = 1<br />
+            <span class="const">GJAPI.TROPHY_ONLY_NOTACHIEVED</span> = -1<br />
+            <span class="const">GJAPI.TROPHY_ALL</span> = 0<br /></p>
+
+            <p class="code">GJAPI.TrophyFetch(GJAPI.TROPHY_ALL, function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.trophies) return;<br />
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i < pResponse.trophies.length; ++i)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.trophies[i].id + " - " + pResponse.trophies[i].title);<br />
+            });</p>
+            
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.TrophyFetchSingle</span> (iTrophyID, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iTrophyID</b> - Unique ID of a trophy</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.TrophyFetchSingle(1234, function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.trophies) return;<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.trophies[0].id + " - " + pResponse.trophies[0].title);<br />
+            });</p>
+
+        </div>
+
+
+        <!-- **************************************************************** -->
+        <!-- Scores -->
+        <div class="block">
+
+            <h2>Score Functions</h2>
+
+            <p><span class="func">GJAPI.ScoreAdd</span> (iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iScoreTableID</b> - Unique ID of a score table (0 = primary score table)</li>
+                <li><i>number</i> <b>iScoreValue</b> - Numerical sort value of the score</li>
+                <li><i>string</i> <b>sScoreText</b> - Score string</li>
+                <li>(optional) <i>string</i> <b>sExtraData</b> - Extra data associated with the score</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.ScoreAdd(1234, 666, "666 Points", "valid entry", function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.ScoreAdd(1234, 666, "666 Points");</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.ScoreAddGuest</span> (iScoreTableID, iScoreValue, sScoreText, sGuestName, sExtraData, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iScoreTableID</b> - Unique ID of a score table (0 = primary score table)</li>
+                <li><i>number</i> <b>iScoreValue</b> - Numerical sort value of the score</li>
+                <li><i>string</i> <b>sScoreText</b> - Score string</li>
+                <li><i>string</i> <b>sGuestName</b> - Name of a guest user (null = logged in user)</li>
+                <li>(optional) <i>string</i> <b>sExtraData</b> - Extra data associated with the score</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.ScoreAddGuest(1234, 666, "666 Points", "Horsti", "valid entry", function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.ScoreAddGuest(1234, 666, "666 Points", "Horsti");</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.ScoreFetch</span> (iScoreTableID, bOnlyUser, iLimit, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iScoreTableID</b> - Unique ID of a score table (0 = primary score table)</li>
+                <li><i>boolean</i> <b>bOnlyUser</b> - Fetch only score entries from the current main user (GJAPI.SCORE_*)</li>
+                <li><i>number</i> <b>iLimit</b> - Max number of fetched score entries</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p><span class="const">GJAPI.SCORE_ONLY_USER</span> = true<br />
+            <span class="const">GJAPI.SCORE_ALL</span> = false</p>
+
+            <p class="code">GJAPI.ScoreFetch(1234, GJAPI.SCORE_ALL, 5, function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.scores) return;<br />
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i < pResponse.scores.length; ++i)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.scores[i].user + " - " + pResponse.scores[i].score);<br />
+            });</p>
+
+        </div>
+
+
+        <!-- **************************************************************** -->
+        <!-- Miscellaneous -->
+        <div class="block">
+
+            <h2>Miscellaneous</h2>
+
+            <h3>Properties</h3>
+
+            <p class="func">Read-Only</p>
+            <ul>
+                <li><i>boolean</i> <b>GJAPI.bActive</b> - User recognized and logged in automatically</li>
+                <li><i>string</i> <b>GJAPI.sUserName</b> - Current User Name</li>
+                <li><i>string</i> <b>GJAPI.sUserToken</b> - Current User Token</li>
+            </ul>
+
+            <p class="func">Read-and-Write</p>
+            <ul>
+                <li><i>boolean</i> <b>GJAPI.bSessionActive</b> - Set Session Active or Idle (default: true)</li>
+            </ul>
+
+            <p class="func">Other</p>
+            <ul>
+                <li><i>string-map</i> <b>GJAPI.asQueryParam</b> - Stores URL parameters (access with GJAPI.asQueryParam["param"])</li>
+                <li><i>boolean</i> <b>GJAPI.bOnGJ</b> - Embedded on Game Jolt</li>
+            </ul>
+
+            <p><br /></p>
+
+            <h3>Custom Requests</h3>
+
+            <p><span class="func">GJAPI.SendRequest</span> (sUrl, pCallback)</p>
+            <ul>
+                <li><i>string</i> <b>sUrl</b> - Relative API request string</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+            <p class="code">GJAPI.SendRequest("/users/?user_id=1", function(pResponse) {alert(pResponse.message);});</p>
+
+
+            <p><span class="func">__CreateAjax</span> (sUrl, pCallback)</p>
+            <ul>
+                <li><i>string</i> <b>sUrl</b> - Custom Ajax request string</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+            <p class="code">__CreateAjax("http://gamejolt.com/img/no-avatar-1.png", function(sDataString) {alert(sDataString);});</p>
+
+
+            <p><br /></p>
+
+            <h3>Logging</h3>
+            <p>The library logs useful information into the JavaScript console (every modern browser has one).<br />
+            You can look into some basic information, generated requests, and returned data from the server.</p>
+            <p><img src="img_log.png" alt="" /></p>
+
+        </div>
+
+
+        <!-- **************************************************************** -->
+        <!-- Credits -->
+        <div class="block">
+
+            <h2>Credits</h2>
+
+            <p><b>Author:</b> Martin Mauersics<br />
+            <b>Special Thanks to:</b> David "CROS" DeCarmine</p>
+
+            <h3>Additional Libraries</h3>
+
+            <p>JavaScript implementation of the RSA Data Security, Inc. MD5 Message Digest Algorithm by Paul Johnston (<a href="http://pajhome.org.uk/" target="_blank">http://pajhome.org.uk/</a>)</p>
+
+            <h3>Software License</h3>
+
+            <p>Copyright (c) 2014 Martin Mauersics<br />
+            <br />
+            This software is provided 'as-is', without any express or implied<br />
+            warranty. In no event will the authors be held liable for any damages<br />
+            arising from the use of this software.<br /><br />
+            Permission is granted to anyone to use this software for any purpose,<br />
+            including commercial applications, and to alter it and redistribute it<br />
+            freely, subject to the following restrictions:</p>
+            <ol>
+                <li>The origin of this software must not be misrepresented; you must not<br />
+                claim that you wrote the original software. If you use this software<br />
+                in a product, an acknowledgment in the product documentation would be<br />
+                appreciated but is not required.</li>
+                <li>Altered source versions must be plainly marked as such, and must not be<br />
+                misrepresented as being the original software.</li>
+                <li>This notice may not be removed or altered from any source<br />
+                distribution.</li>
+                <li>This software may only be used within the <a href="http://gamejolt.com/terms/" target="_blank">terms of Game Jolt</a>.</li>
+            </ol>
+
+        </div>
+
+
+    </body>
+
+</html>

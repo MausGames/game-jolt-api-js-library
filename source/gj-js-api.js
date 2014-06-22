@@ -9,7 +9,7 @@
 //*--------------------------------------------------------------------------------------*//
 ////////////////////////////////////////////////////////////////////////////////////////////
 //*--------------------------------------------------------------------------------------*//
-//| Game Jolt API JS Library v0.1a (http://gamejolt.com)                                 |//
+//| Game Jolt API JS Library v0.2a (http://gamejolt.com)                                 |//
 //*--------------------------------------------------------------------------------------*//
 //| Author: Martin Mauersics                                                             |//
 //| Special Thanks to: David "CROS" DeCarmine                                            |//
@@ -49,8 +49,9 @@ GJAPI.iGameID  = 0;    // # change this
 GJAPI.sGameKey = "";   // # change this too
 if(GJAPI.iGameID === 0 || GJAPI.sGameKey === "") alert("Game ID or Game Key missing!");
 
-GJAPI.sAPI    = "http://gamejolt.com/api/game/v1";
-GJAPI.sFormat = "json";
+GJAPI.sAPI     = "http://gamejolt.com/api/game/v1";
+GJAPI.sFormat  = "json";
+GJAPI.sLogName = "[Game Jolt API] ";
 
 
 // ****************************************************************
@@ -93,7 +94,7 @@ GJAPI.sUserToken = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_token"]    : "";
 GJAPI.SendRequest = function(sURL, pCallback)
 {
     // add main URL, game ID and format type
-    sURL = GJAPI.sAPI + sURL                        +
+    sURL = GJAPI.sAPI + encodeURI(sURL)             +
            ((sURL.indexOf('?') === -1) ? '?' : '&') +
            "game_id=" + GJAPI.iGameID               +
            "&format=" + GJAPI.sFormat;
@@ -102,12 +103,20 @@ GJAPI.SendRequest = function(sURL, pCallback)
     sURL += "&signature=" + hex_md5(sURL + GJAPI.sGameKey);
 
     // send off the request
-    microAjax(sURL, function(sResponse)
+    __CreateAjax(sURL, function(sResponse)
     {
+        console.info(GJAPI.sLogName + "<" + sURL + "> " + sResponse);
+        
         if(sResponse === "") return;
         if(pCallback) pCallback(eval("(" + sResponse + ")").response);
     });
 };
+
+// send some information to the console
+console.info(GJAPI.asQueryParam);
+console.info(GJAPI.sLogName + (GJAPI.bOnGJ   ? "E" : "Not e") + "mbedded on Game Jolt <" + window.location.origin + window.location.pathname + ">");
+console.info(GJAPI.sLogName + (GJAPI.bActive ? "U" : "No u")  + "ser recognized <"       + GJAPI.sUserName + ">");
+if(!window.location.hostname) console.warn(GJAPI.sLogName + "XMLHttpRequest may not work properly on a local environment");
 
 
 // ****************************************************************
@@ -149,19 +158,32 @@ if(GJAPI.bActive)
 
 
 // ****************************************************************
-// score functions
-GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)
+// user functions
+GJAPI.FetchUserID = function(iUserID, pCallback)
 {
-    if(!GJAPI.bActive) return;
+    // send fetch-user request
+    GJAPI.SendRequest("/users/"   +
+                      "?user_id=" + iUserID, pCallback);
+};
 
-    // send add-score request
-    GJAPI.SendRequest("/scores/add/"                                        +
-                      "?username="   + GJAPI.sUserName                      +
-                      "&user_token=" + GJAPI.sUserToken                     +
-                      (iScoreTableID ? ("&table_id=" + iScoreTableID) : "") +
-                      "&sort="       + iScoreValue                          +
-                      "&score="      + sScoreText                           +
-                      (sExtraData ? ("&extra_data=" + sExtraData) : ""), pCallback);
+GJAPI.FetchUserName = function(sUserName, pCallback)
+{
+    // send fetch-user request
+    GJAPI.SendRequest("/users/"    +
+                      "?username=" + sUserName, pCallback);
+};
+
+GJAPI.FetchUserCurrent = function(pCallback)
+{
+    if(!GJAPI.bActive)
+    {
+        console.warn(GJAPI.sLogName + "FetchUserCurrent() failed: no user logged in");
+        console.trace();
+        return;
+    }
+
+    // send fetch-user request
+    GJAPI.FetchUserName(GJAPI.sUserName, pCallback);
 };
 
 
@@ -169,9 +191,18 @@ GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pC
 // trophy functions
 GJAPI.abTrophyCache = {};
 
+GJAPI.TROPHY_ONLY_ACHIEVED    =  1;
+GJAPI.TROPHY_ONLY_NOTACHIEVED = -1;
+GJAPI.TROPHY_ALL              =  0;
+
 GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
 {
-    if(!GJAPI.bActive) return;
+    if(!GJAPI.bActive)
+    {
+        console.warn(GJAPI.sLogName + "TrophyAchieve(" + iTrophyID + ") failed: no user logged in");
+        console.trace();
+        return;
+    }
 
     // check for already achieved trophy
     if(GJAPI.abTrophyCache[iTrophyID]) return;
@@ -184,31 +215,123 @@ GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
                       "&trophy_id="  + iTrophyID, pCallback);
 };
 
+GJAPI.TrophyFetch = function(iAchieved, pCallback)
+{
+    if(!GJAPI.bActive)
+    {
+        console.warn(GJAPI.sLogName + "TrophyFetch(" + iAchieved + ") failed: no user logged in");
+        console.trace();
+        return;
+    }
 
-/*
-Copyright (c) 2008 Stefan Lange-Hegermann
+    // only trophies with the requested status
+    var sTrophyData = (iAchieved === GJAPI.TROPHY_ALL) ? "" :
+                      "&achieved=" + ((iAchieved >= GJAPI.TROPHY_ONLY_ACHIEVED) ? "true" : "false");
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+    // send fetch-trophy request
+    GJAPI.SendRequest("/trophies/"                      +
+                      "?username="   + GJAPI.sUserName  +
+                      "&user_token=" + GJAPI.sUserToken +
+                      (sTrophyData), pCallback);
+};
 
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
+GJAPI.TrophyFetchSingle = function(iTrophyID, pCallback)
+{
+    if(!GJAPI.bActive)
+    {
+        console.warn(GJAPI.sLogName + "TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in");
+        console.trace();
+        return;
+    }
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+    // send fetch-trophy request
+    GJAPI.SendRequest("/trophies/"                      +
+                      "?username="   + GJAPI.sUserName  +
+                      "&user_token=" + GJAPI.sUserToken +
+                      "&trophy_id="  + iTrophyID, pCallback);
+};
 
-### Modified Version
-*/
-function microAjax(c,b){var e={};e.bindFunction=function(g,f){return function(){return g.apply(f,[f])}};e.stateChange=function(f){if(e.request.readyState===4){e.callbackFunction(e.request.responseText)}};e.getRequest=function(){if(window.ActiveXObject){return new ActiveXObject("Microsoft.XMLHTTP")}else{if(window.XMLHttpRequest){return new XMLHttpRequest()}}return false};e.postBody=(arguments[2]||"");e.callbackFunction=b;e.url=c;e.request=e.getRequest();if(e.request){var d=e.request;d.onreadystatechange=e.bindFunction(e.stateChange,e);if(e.postBody!==""){d.open("POST",c);d.setRequestHeader("X-Requested-With","XMLHttpRequest");d.setRequestHeader("Content-Type","application/x-www-form-urlencoded")}else{d.open("GET",c)}d.send(e.postBody)}return e};
+
+// ****************************************************************
+// score functions
+GJAPI.SCORE_ONLY_USER = true;
+GJAPI.SCORE_ALL       = false;
+
+GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)
+{
+    if(!GJAPI.bActive)
+    {
+        console.warn(GJAPI.sLogName + "ScoreAdd(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in");
+        console.trace();
+        return;
+    }
+
+    // send add-score request
+    GJAPI.ScoreAddGuest(iScoreTableID, iScoreValue, sScoreText, null, sExtraData, pCallback);
+};
+
+GJAPI.ScoreAddGuest = function(iScoreTableID, iScoreValue, sScoreText, sGuestName, sExtraData, pCallback)
+{
+    // use user data or guest name
+    var sUserData = (sGuestName && sGuestName.length) ?
+                    "&guest="      + sGuestName       :
+                    "&username="   + GJAPI.sUserName  +
+                    "&user_token=" + GJAPI.sUserToken;
+
+    // send add-score request
+    GJAPI.SendRequest("/scores/add/"                                          +
+                      "?sort="  + iScoreValue                                 +
+                      "&score=" + sScoreText                                  +
+                      (iScoreTableID ? ("&table_id="   + iScoreTableID) : "") +
+                      (sExtraData    ? ("&extra_data=" + sExtraData)    : "")
+                      (sUserData), pCallback);
+};
+
+GJAPI.ScoreFetch = function(iScoreTableID, bOnlyUser, iLimit, pCallback)
+{
+    if(!GJAPI.bActive && bOnlyUser)
+    {
+        console.warn(GJAPI.sLogName + "ScoreFetch(" + iScoreTableID + ", " + bOnlyUser + ", " + iLimit + ") failed: no user logged in");
+        console.trace();
+        return;
+    }
+
+    // only scores from the main user or all scores
+    var sUserData = (bOnlyUser === GJAPI.SCORE_ONLY_USER) ?
+                    "&username="   + GJAPI.sUserName      +
+                    "&user_token=" + GJAPI.sUserToken     :
+                    "";
+
+    // send fetch-score request
+    GJAPI.SendRequest("/scores/"                                            +
+                      "?limit=" + iLimit                                    +
+                      (iScoreTableID ? ("&table_id=" + iScoreTableID) : "") +
+                      (sUserData), pCallback);
+};
+
+
+// ****************************************************************
+// create asynchronous request
+function __CreateAjax(sUrl, pCallback)
+{
+	if(window.XMLHttpRequest)
+    {
+        var pRequest = new XMLHttpRequest();
+
+        // bind callback function
+		pRequest.onreadystatechange = function()
+        {
+            if(pRequest.readyState === 4)
+                pCallback(pRequest.responseText);
+        };
+
+        // set URL and send off the request
+		pRequest.open("GET", sUrl);
+		pRequest.send();
+	}
+    else console.error(GJAPI.sLogName + "XMLHttpRequest not supported");
+}
+
 
 /*
 * A JavaScript implementation of the RSA Data Security, Inc. MD5 Message

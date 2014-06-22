@@ -1,0 +1,61 @@
+
+body
+{
+    font: 0.9em arial;
+}
+
+iframe
+{
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    margin: 0;
+    z-index: -1;
+}
+
+i
+{
+    color: #999;
+}
+
+img, .block, .code, .code-simple
+{
+    border: solid 1px #CCC;
+}
+
+.block
+{
+    background-color: rgba(230, 230, 230, 0.5);
+    padding: 5px 20px;
+    margin-bottom: 10px;
+}
+
+.func
+{
+    color: #1FA2D6;
+    font-weight: bold;
+}
+
+.const
+{
+    color: #1EBE5A;
+    font-weight: bold;
+}
+
+.code
+{
+    background-color: rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    font-family: courier new;
+}
+
+.code-simple
+{
+    background-color: #FFF;
+    padding: 0px;
+    font-family: courier new;
+    white-space: nowrap;
+}
