@@ -59,3 +59,9 @@ img, .block, .code, .code-simple
     font-family: courier new;
     white-space: nowrap;
 }
+
+.link
+{
+    float: right;
+    margin-top: 18px;
+}

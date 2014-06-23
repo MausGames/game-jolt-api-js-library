@@ -314,21 +314,21 @@ GJAPI.ScoreFetch = function(iScoreTableID, bOnlyUser, iLimit, pCallback)
 // create asynchronous request
 function __CreateAjax(sUrl, pCallback)
 {
-	if(window.XMLHttpRequest)
+    if(window.XMLHttpRequest)
     {
         var pRequest = new XMLHttpRequest();
 
         // bind callback function
-		pRequest.onreadystatechange = function()
+        pRequest.onreadystatechange = function()
         {
             if(pRequest.readyState === 4)
                 pCallback(pRequest.responseText);
         };
 
         // set URL and send off the request
-		pRequest.open("GET", sUrl);
-		pRequest.send();
-	}
+        pRequest.open("GET", sUrl);
+        pRequest.send();
+    }
     else console.error(GJAPI.sLogName + "XMLHttpRequest not supported");
 }
 

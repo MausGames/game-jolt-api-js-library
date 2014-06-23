@@ -21,40 +21,14 @@
 
     </head>
 
-    <body  onload="InitBackground()">
-
-
-        <p style="text-align: center;">-- <a href="javascript:KillBackground()">Mute Background</a> --<br />
-        <script>
-            function KillBackground() {var p = document.getElementById("background"); p.parentElement.removeChild(p);}
-        </script>
-
-        
-        <!-- **************************************************************** -->
-        <!-- Background (not part of the Game Jolt API) -->
-        <iframe id="background" src="background/background.html"></iframe>
-        <script>
-            function InitBackground()
-            {
-                var WIND = document.getElementById("background").contentWindow.WIND;
-
-                // glue-code: forward movement from the main document to the iframe
-                document.addEventListener("mousemove", function(pCursor)
-                {
-                    // set mouse position relative to the canvas
-                    WIND.g_vMousePos[0] = pCursor.clientX*WIND.g_fMouseRange - WIND.g_fMouseRect[0];
-                    WIND.g_vMousePos[1] = pCursor.clientY*WIND.g_fMouseRange - WIND.g_fMouseRect[1];
-
-                    return true;
-                }, false);
-            }
-        </script>
+    <body>
 
 
         <!-- **************************************************************** -->
         <!-- Main -->
         <div class="block">
 
+            <a class="link" style="margin-top: 12px;" href="http://www.maus-games.at" target="_blank"><img src="http://www.maus-games.at/favicon.ico" alt="" /></a>
             <p><img src="gamejolt_js.png" alt="" title="(c) Game Jolt" /></p>
             <h1 style="display: none;">Game Jolt API JavaScript Library</h1>
 
@@ -84,7 +58,8 @@
         <!-- Users -->
         <div class="block">
 
-            <h2>User Functions</h2>
+            <a class="link" href="http://gamejolt.com/api/doc/game/users/" target="_blank">http://gamejolt.com/api/doc/game/users/</a>
+            <h2>User Functions</h2> 
 
             <p><span class="func">GJAPI.FetchUserID</span> (iUserID, pCallback)</p>
             <ul>
@@ -129,9 +104,10 @@
 
 
         <!-- **************************************************************** -->
-        <!-- Tropies -->
+        <!-- Trophies -->
         <div class="block">
 
+            <a class="link" href="http://gamejolt.com/api/doc/game/trophies/" target="_blank">http://gamejolt.com/api/doc/game/trophies/</a>
             <h2>Trophy Functions</h2>
 
             <p><span class="func">GJAPI.TrophyAchieve</span> (iTrophyID, pCallback)</p>
@@ -159,7 +135,7 @@
             {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.trophies) return;<br />
             <br />
-            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i < pResponse.trophies.length; ++i)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; pResponse.trophies.length; ++i)<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.trophies[i].id + " - " + pResponse.trophies[i].title);<br />
             });</p>
             
@@ -184,6 +160,7 @@
         <!-- Scores -->
         <div class="block">
 
+            <a class="link" href="http://gamejolt.com/api/doc/game/scores/" target="_blank">http://gamejolt.com/api/doc/game/scores/</a>
             <h2>Score Functions</h2>
 
             <p><span class="func">GJAPI.ScoreAdd</span> (iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)</p>
@@ -230,7 +207,7 @@
             {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.scores) return;<br />
             <br />
-            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i < pResponse.scores.length; ++i)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; pResponse.scores.length; ++i)<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.scores[i].user + " - " + pResponse.scores[i].score);<br />
             });</p>
 
@@ -285,9 +262,9 @@
 
             <p><br /></p>
 
-            <h3>Logging</h3>
-            <p>The library logs useful information into the JavaScript console (every modern browser has one).<br />
-            You can look into some basic information, generated requests, and returned data from the server.</p>
+            <h3>Activity Log</h3>
+            <p>The library logs useful information into the JavaScript console of your browser,<br />
+            consisting of some basic information, generated requests, and returned data from the server.</p>
             <p><img src="img_log.png" alt="" /></p>
 
         </div>
@@ -300,7 +277,7 @@
             <h2>Credits</h2>
 
             <p><b>Author:</b> Martin Mauersics<br />
-            <b>Special Thanks to:</b> David "CROS" DeCarmine</p>
+            <b>Special Thanks to:</b> <a href="http://davidjolt.com/" target="_blank">David "CROS" DeCarmine</a></p>
 
             <h3>Additional Libraries</h3>
 
