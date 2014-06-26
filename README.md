@@ -12,8 +12,10 @@ And if your game is written in JavaScript, then **this library is able to connec
 > - activity log, parameter fetch and other supporting functions
 > - extremely easy to setup and use
 
-Documentation for the library can be found [here][3].
+#
+
+**Documentation:**  
+<http://www.maus-games.at/files/gamejolt/js/>
 
 [1]: http://gamejolt.com
 [2]: http://gamejolt.com/developers/achievements-new/
-[3]: http://www.maus-games.at/files/gamejolt/js/
