@@ -12,7 +12,9 @@
 //| Game Jolt API JS Library v0.2a (http://gamejolt.com)                                 |//
 //*--------------------------------------------------------------------------------------*//
 //| Author: Martin Mauersics                                                             |//
-//| Special Thanks to: David "CROS" DeCarmine                                            |//
+//| Special Thanks to:                                                                   |//
+//| David "CROS" DeCarmine, Jani "JNyknn" Nykänen,                                       |//
+//| Travis "Clonze" Miller, Garden Variety                                               |//
 //*--------------------------------------------------------------------------------------*//
 //| Copyright (c) 2014 Martin Mauersics                                                  |//
 //|                                                                                      |//
@@ -283,7 +285,7 @@ GJAPI.ScoreAddGuest = function(iScoreTableID, iScoreValue, sScoreText, sGuestNam
                       "?sort="  + iScoreValue                                 +
                       "&score=" + sScoreText                                  +
                       (iScoreTableID ? ("&table_id="   + iScoreTableID) : "") +
-                      (sExtraData    ? ("&extra_data=" + sExtraData)    : "")
+                      (sExtraData    ? ("&extra_data=" + sExtraData)    : "") +
                       (sUserData), pCallback);
 };
 
