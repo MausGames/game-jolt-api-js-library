@@ -11,10 +11,10 @@
 //*--------------------------------------------------------------------------------------*//
 //| Game Jolt API JS Library v0.2a (http://gamejolt.com)                                 |//
 //*--------------------------------------------------------------------------------------*//
-//| Author: Martin Mauersics                                                             |//
 //| Special Thanks to:                                                                   |//
-//| David "CROS" DeCarmine, Jani "JNyknn" Nykänen,                                       |//
-//| Travis "Clonze" Miller, Garden Variety                                               |//
+//|                                                                                      |//
+//| David "CROS" DeCarmine, Jani "JNyknn" Nykänen, Travis "Clonze" Miller,               |//
+//| Garden Variety                                                                       |//
 //*--------------------------------------------------------------------------------------*//
 //| Copyright (c) 2014 Martin Mauersics                                                  |//
 //|                                                                                      |//
@@ -208,7 +208,7 @@ GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
 
     // check for already achieved trophy
     if(GJAPI.abTrophyCache[iTrophyID]) return;
-    GJAPI.abTrophyCache[iTrophyID] = true;
+    GJAPI.abTrophyCache[iTrophyID] = true; // TODO: move to nested callback
 
     // send achieve-trophy request
     GJAPI.SendRequest("/trophies/add-achieved/"         +
