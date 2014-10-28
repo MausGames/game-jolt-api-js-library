@@ -9,7 +9,7 @@
 //*--------------------------------------------------------------------------------------*//
 ////////////////////////////////////////////////////////////////////////////////////////////
 //*--------------------------------------------------------------------------------------*//
-//| Game Jolt API JS Library v0.2a (http://gamejolt.com)                                 |//
+//| Game Jolt API JS Library v0.3a (http://gamejolt.com)                                 |//
 //*--------------------------------------------------------------------------------------*//
 //| Special Thanks to:                                                                   |//
 //|                                                                                      |//
@@ -47,13 +47,14 @@ var GJAPI = {};
 
 // ****************************************************************
 // configuration attributes
-GJAPI.iGameID  = 0;    // # change this
-GJAPI.sGameKey = "";   // # change this too
+GJAPI.iGameID    = 0;      // # change this
+GJAPI.sGameKey   = "";     // # change this too
+GJAPI.bAutoLogin = true;   // automatically log in users on Game Jolt
 if(GJAPI.iGameID === 0 || GJAPI.sGameKey === "") alert("Game ID or Game Key missing!");
 
 GJAPI.sAPI     = "http://gamejolt.com/api/game/v1";
 GJAPI.sFormat  = "json";
-GJAPI.sLogName = "[Game Jolt API] ";
+GJAPI.sLogName = "[Game Jolt API]";
 
 
 // ****************************************************************
@@ -83,12 +84,12 @@ GJAPI.asQueryParam = function()
 
 GJAPI.bOnGJ = window.location.hostname.match(/gamejolt/) ? true : false;
 
-
-// ****************************************************************
-// main attributes
-GJAPI.bActive    = (GJAPI.asQueryParam["gjapi_username"] && GJAPI.asQueryParam["gjapi_token"]) ? true : false;
-GJAPI.sUserName  = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_username"] : "";
-GJAPI.sUserToken = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_token"]    : "";
+GJAPI.LogTrace = function(sMessage)
+{
+    // log message and stack trace
+    console.warn(GJAPI.sLogName + " " + sMessage);
+    console.trace();
+};
 
 
 // ****************************************************************
@@ -114,6 +115,11 @@ GJAPI.SendRequest = function(sURL, pCallback)
     });
 };
 
+// automatically retrieve and log in current user on Game Jolt 
+GJAPI.bActive    = (GJAPI.bAutoLogin && GJAPI.asQueryParam["gjapi_username"] && GJAPI.asQueryParam["gjapi_token"]) ? true : false;
+GJAPI.sUserName  = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_username"] : "";
+GJAPI.sUserToken = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_token"]    : "";
+
 // send some information to the console
 console.info(GJAPI.asQueryParam);
 console.info(GJAPI.sLogName + (GJAPI.bOnGJ   ? "E" : "Not e") + "mbedded on Game Jolt <" + window.location.origin + window.location.pathname + ">");
@@ -127,14 +133,31 @@ GJAPI.bSessionActive = true;
 
 GJAPI.SessionOpen = function()
 {
+    if(!GJAPI.bActive) {GJAPI.LogTrace("SessionOpen() failed: no user logged in"); return;}
+    
+    // check for already open session
+    if(GJAPI.iSessionHandle) return;
+
     // send open-session request
     GJAPI.SendRequest("/sessions/open/"                +
                       "?username="   + GJAPI.sUserName +
-                      "&user_token=" + GJAPI.sUserToken);
+                      "&user_token=" + GJAPI.sUserToken,
+    function(pResponse)
+    {
+        // check for success
+        if(pResponse.success)
+        {
+            // add automatic session ping and close
+            GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
+            window.addEventListener("beforeunload", GJAPI.SessionClose, false);
+        }
+    });
 };
 
 GJAPI.SessionPing = function()
 {
+    if(!GJAPI.bActive) {GJAPI.LogTrace("SessionPing() failed: no user logged in"); return;}
+
     // send ping-session request
     GJAPI.SendRequest("/sessions/ping/"                 +
                       "?username="   + GJAPI.sUserName  +
@@ -144,48 +167,88 @@ GJAPI.SessionPing = function()
 
 GJAPI.SessionClose = function()
 {
+    if(!GJAPI.bActive) {GJAPI.LogTrace("SessionClose() failed: no user logged in"); return;}
+
+    if(GJAPI.iPingHandle)
+    {
+        // remove automatic session ping and close
+        window.clearInterval(GJAPI.iPingHandle);
+        window.removeEventListener("beforeunload", GJAPI.SessionClose);
+        
+        GJAPI.iPingHandle = 0;
+    }
+    
     // send close-session request
     GJAPI.SendRequest("/sessions/close/"               +
                       "?username="   + GJAPI.sUserName +
                       "&user_token=" + GJAPI.sUserToken);
 };
 
-if(GJAPI.bActive)
-{
-    // automatically control the player session
-    GJAPI.SessionOpen();                                                  // open
-    window.setInterval(GJAPI.SessionPing, 30000);                         // ping
-    window.addEventListener("beforeunload", GJAPI.SessionClose, false);   // close (may not work)
-}
+// automatically start player session
+if(GJAPI.bActive) GJAPI.SessionOpen();
 
 
 // ****************************************************************
 // user functions
-GJAPI.FetchUserID = function(iUserID, pCallback)
+GJAPI.UserLoginManual = function(sUserName, sUserToken, pCallback)
+{
+    if(GJAPI.bActive) {GJAPI.LogTrace("UserLoginManual(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in"); return;}
+
+    // send authentication request
+    GJAPI.SendRequest("/users/auth/"             +
+                      "?username="   + sUserName +
+                      "&user_token=" + sUserToken,
+    function(pResponse)
+    {
+        // check for success
+        if(pResponse.success)
+        {
+            // save login properties
+            GJAPI.bActive    = true;
+            GJAPI.sUserName  = sUserName;
+            GJAPI.sUserToken = sUserToken;
+            
+            // open session
+            GJAPI.SessionOpen();
+        }
+        
+        if(pCallback) pCallback(pResponse);
+    });
+};
+
+GJAPI.UserLogout = function()
+{
+    if(!GJAPI.bActive) {GJAPI.LogTrace("UserLogout() failed: no user logged in"); return;}
+    
+    // close session
+    GJAPI.SessionClose();
+    
+    // reset login properties
+    GJAPI.bActive    = false;
+    GJAPI.sUserName  = "";
+    GJAPI.sUserToken = "";
+};
+
+GJAPI.UserFetchID = function(iUserID, pCallback)
 {
     // send fetch-user request
     GJAPI.SendRequest("/users/"   +
                       "?user_id=" + iUserID, pCallback);
 };
 
-GJAPI.FetchUserName = function(sUserName, pCallback)
+GJAPI.UserFetchName = function(sUserName, pCallback)
 {
     // send fetch-user request
     GJAPI.SendRequest("/users/"    +
                       "?username=" + sUserName, pCallback);
 };
 
-GJAPI.FetchUserCurrent = function(pCallback)
+GJAPI.UserFetchCurrent = function(pCallback)
 {
-    if(!GJAPI.bActive)
-    {
-        console.warn(GJAPI.sLogName + "FetchUserCurrent() failed: no user logged in");
-        console.trace();
-        return;
-    }
+    if(!GJAPI.bActive) {GJAPI.LogTrace("UserFetchCurrent() failed: no user logged in"); return;}
 
     // send fetch-user request
-    GJAPI.FetchUserName(GJAPI.sUserName, pCallback);
+    GJAPI.UserFetchName(GJAPI.sUserName, pCallback);
 };
 
 
@@ -199,32 +262,32 @@ GJAPI.TROPHY_ALL              =  0;
 
 GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
 {
-    if(!GJAPI.bActive)
-    {
-        console.warn(GJAPI.sLogName + "TrophyAchieve(" + iTrophyID + ") failed: no user logged in");
-        console.trace();
-        return;
-    }
+    if(!GJAPI.bActive) {GJAPI.LogTrace("TrophyAchieve(" + iTrophyID + ") failed: no user logged in"); return;}
 
     // check for already achieved trophy
     if(GJAPI.abTrophyCache[iTrophyID]) return;
-    GJAPI.abTrophyCache[iTrophyID] = true; // TODO: move to nested callback
 
     // send achieve-trophy request
     GJAPI.SendRequest("/trophies/add-achieved/"         +
                       "?username="   + GJAPI.sUserName  +
                       "&user_token=" + GJAPI.sUserToken +
-                      "&trophy_id="  + iTrophyID, pCallback);
+                      "&trophy_id="  + iTrophyID,
+    function(pResponse)
+    {
+        // check for success
+        if(pResponse.success)
+        {
+            // save status
+            GJAPI.abTrophyCache[iTrophyID] = true;
+        }
+        
+        if(pCallback) pCallback(pResponse);
+    });
 };
 
 GJAPI.TrophyFetch = function(iAchieved, pCallback)
 {
-    if(!GJAPI.bActive)
-    {
-        console.warn(GJAPI.sLogName + "TrophyFetch(" + iAchieved + ") failed: no user logged in");
-        console.trace();
-        return;
-    }
+    if(!GJAPI.bActive) {GJAPI.LogTrace("TrophyFetch(" + iAchieved + ") failed: no user logged in"); return;}
 
     // only trophies with the requested status
     var sTrophyData = (iAchieved === GJAPI.TROPHY_ALL) ? "" :
@@ -239,12 +302,7 @@ GJAPI.TrophyFetch = function(iAchieved, pCallback)
 
 GJAPI.TrophyFetchSingle = function(iTrophyID, pCallback)
 {
-    if(!GJAPI.bActive)
-    {
-        console.warn(GJAPI.sLogName + "TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in");
-        console.trace();
-        return;
-    }
+    if(!GJAPI.bActive) {GJAPI.LogTrace("TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in"); return;}
 
     // send fetch-trophy request
     GJAPI.SendRequest("/trophies/"                      +
@@ -261,12 +319,7 @@ GJAPI.SCORE_ALL       = false;
 
 GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)
 {
-    if(!GJAPI.bActive)
-    {
-        console.warn(GJAPI.sLogName + "ScoreAdd(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in");
-        console.trace();
-        return;
-    }
+    if(!GJAPI.bActive) {GJAPI.LogTrace("ScoreAdd(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in"); return;}
 
     // send add-score request
     GJAPI.ScoreAddGuest(iScoreTableID, iScoreValue, sScoreText, null, sExtraData, pCallback);
@@ -291,12 +344,7 @@ GJAPI.ScoreAddGuest = function(iScoreTableID, iScoreValue, sScoreText, sGuestNam
 
 GJAPI.ScoreFetch = function(iScoreTableID, bOnlyUser, iLimit, pCallback)
 {
-    if(!GJAPI.bActive && bOnlyUser)
-    {
-        console.warn(GJAPI.sLogName + "ScoreFetch(" + iScoreTableID + ", " + bOnlyUser + ", " + iLimit + ") failed: no user logged in");
-        console.trace();
-        return;
-    }
+    if(!GJAPI.bActive && bOnlyUser) {GJAPI.LogTrace("ScoreFetch(" + iScoreTableID + ", " + bOnlyUser + ", " + iLimit + ") failed: no user logged in"); return;}
 
     // only scores from the main user or all scores
     var sUserData = (bOnlyUser === GJAPI.SCORE_ONLY_USER) ?

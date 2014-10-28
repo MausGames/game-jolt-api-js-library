@@ -57,14 +57,36 @@
 
             <a class="link" href="http://gamejolt.com/api/doc/game/users/" target="_blank">http://gamejolt.com/api/doc/game/users/</a>
             <h2>User Functions</h2> 
+            
+            <p><span class="func">GJAPI.UserLoginManual</span> (sUserName, sUserToken, pCallback)</p>
+            <ul>
+                <li><i>string</i> <b>sUserName</b> - Login name of an user</li>
+                <li><i>string</i> <b>sUserToken</b> - Token of that user (not the password)</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
 
-            <p><span class="func">GJAPI.FetchUserID</span> (iUserID, pCallback)</p>
+            <p class="code">GJAPI.UserLoginManual("Horsti", "myToken123", function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(pResponse.success)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info("Login successful");<br />
+            });</p>
+
+            <p><br /></p>
+            
+            <p><span class="func">GJAPI.UserLogout</span> ()</p>
+            <ul>
+                <li>Requires no parameters and no communication with the server</li>
+            </ul>
+            
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.UserFetchID</span> (iUserID, pCallback)</p>
             <ul>
                 <li><i>number</i> <b>iUserID</b> - Unique ID of an user</li>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
 
-            <p class="code">GJAPI.FetchUserID(1, function(pResponse)<br />
+            <p class="code">GJAPI.UserFetchID(1, function(pResponse)<br />
             {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.users) return;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.users[0].username + " - " + pResponse.users[0].developer_description);<br />
@@ -72,13 +94,13 @@
 
             <p><br /></p>
 
-            <p><span class="func">GJAPI.FetchUserName</span> (sUserName, pCallback)</p>
+            <p><span class="func">GJAPI.UserFetchName</span> (sUserName, pCallback)</p>
             <ul>
                 <li><i>number</i> <b>sUserName</b> - Unique name of an user</li>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
 
-            <p class="code">GJAPI.FetchUserName("CROS", function(pResponse)<br />
+            <p class="code">GJAPI.UserFetchName("CROS", function(pResponse)<br />
             {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.users) return;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.users[0].username + " - " + pResponse.users[0].developer_description);<br />
@@ -86,12 +108,12 @@
 
             <p><br /></p>
 
-            <p><span class="func">GJAPI.FetchUserCurrent</span> (pCallback)</p>
+            <p><span class="func">GJAPI.UserFetchCurrent</span> (pCallback)</p>
             <ul>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
 
-            <p class="code">GJAPI.FetchUserCurrent(function(pResponse)<br />
+            <p class="code">GJAPI.UserFetchCurrent(function(pResponse)<br />
             {<br />
             &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.users) return;<br />
             &nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.users[0].username + " - " + pResponse.users[0].developer_description);<br />
@@ -221,7 +243,7 @@
 
             <p class="func">Read-Only</p>
             <ul>
-                <li><i>boolean</i> <b>GJAPI.bActive</b> - User recognized and logged in automatically</li>
+                <li><i>boolean</i> <b>GJAPI.bActive</b> - User recognized and logged in</li>
                 <li><i>string</i> <b>GJAPI.sUserName</b> - Current User Name</li>
                 <li><i>string</i> <b>GJAPI.sUserToken</b> - Current User Token</li>
             </ul>
