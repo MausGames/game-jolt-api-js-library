@@ -192,7 +192,7 @@ if(GJAPI.bActive) GJAPI.SessionOpen();
 // user functions
 GJAPI.UserLoginManual = function(sUserName, sUserToken, pCallback)
 {
-    if(GJAPI.bActive) {GJAPI.LogTrace("UserLoginManual(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in"); return;}
+    if(GJAPI.bActive) {GJAPI.LogTrace("UserLoginManual(" + sUserName + ", " + sUserToken + ") failed: user " + GJAPI.sUserName + " already logged in"); return;}
 
     // send authentication request
     GJAPI.SendRequest("/users/auth/"             +
