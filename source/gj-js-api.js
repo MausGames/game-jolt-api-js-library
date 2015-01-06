@@ -16,7 +16,7 @@
 //| David "CROS" DeCarmine, Jani "JNyknn" Nykänen, Travis "Clonze" Miller,               |//
 //| Garden Variety                                                                       |//
 //*--------------------------------------------------------------------------------------*//
-//| Copyright (c) 2014 Martin Mauersics                                                  |//
+//| Copyright (c) 2014-2015 Martin Mauersics                                             |//
 //|                                                                                      |//
 //| This software is provided 'as-is', without any express or implied                    |//
 //| warranty. In no event will the authors be held liable for any damages                |//
@@ -43,6 +43,8 @@
 ////////////////////////////////////////////////////////////////////////////////////////////
 "use strict";
 var GJAPI = {};
+
+// TODO: clear trophy cache on logout or new login ?
 
 
 // ****************************************************************
@@ -169,13 +171,13 @@ GJAPI.SessionClose = function()
 {
     if(!GJAPI.bActive) {GJAPI.LogTrace("SessionClose() failed: no user logged in"); return;}
 
-    if(GJAPI.iPingHandle)
+    if(GJAPI.iSessionHandle)
     {
         // remove automatic session ping and close
-        window.clearInterval(GJAPI.iPingHandle);
+        window.clearInterval(GJAPI.iSessionHandle);
         window.removeEventListener("beforeunload", GJAPI.SessionClose);
         
-        GJAPI.iPingHandle = 0;
+        GJAPI.iSessionHandle = 0;
     }
     
     // send close-session request
@@ -379,7 +381,7 @@ function __CreateAjax(sUrl, pCallback)
         pRequest.open("GET", sUrl);
         pRequest.send();
     }
-    else console.error(GJAPI.sLogName + "XMLHttpRequest not supported");
+    else console.error(GJAPI.sLogName + " XMLHttpRequest not supported");
 }
 
 
