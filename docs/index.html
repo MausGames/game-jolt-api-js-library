@@ -236,6 +236,89 @@
 
 
         <!-- **************************************************************** -->
+        <!-- Data Store -->
+        <div class="block">
+
+            <a class="link" href="http://gamejolt.com/api/doc/game/scores/" target="_blank">http://gamejolt.com/api/doc/game/data-store/</a>
+            <h2>Data Store Functions</h2>
+
+            <p><span class="const">GJAPI.DATA_STORE_USER</span> = 0<br />
+            <span class="const">GJAPI.DATA_STORE_GLOBAL</span> = 1</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.DataStoreFetch</span> (iStore, sKey, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
+                <li><i>string</i> <b>sKey</b> - The key of the data item to fetch</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.DataStoreFetch(GJAPI.DATA_STORE_USER, "max-level", function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(pResponse.success)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(pResponse.data);<br />
+            });</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.DataStoreSet</span> (iStore, sKey, sData, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
+                <li><i>string</i> <b>sKey</b> - The key of the data item to set</li>
+                <li><i>string</i> <b>sData</b> - The data to set</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.DataStoreSet(GJAPI.DATA_STORE_USER, "max-level", "5", function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.DataStoreSet(GJAPI.DATA_STORE_GLOBAL, "players", "5");</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.DataStoreUpdate</span> (iStore, sKey, sOperation, sValue, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
+                <li><i>string</i> <b>sKey</b> - The key of the data item to update</li>
+                <li><i>string</i> <b>sOperation</b> - The operation to perform</li>
+                <li><i>string</i> <b>sValue</b> - The value to work</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.DataStoreUpdate(GJAPI.DATA_STORE_USER, "max-level", "add", "1", function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.DataStoreUpdate(GJAPI.DATA_STORE_GLOBAL, "players", "subtract", "1");</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.DataStoreRemove</span> (iStore, sKey, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
+                <li><i>string</i> <b>sKey</b> - The key of the data item to remove</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.DataStoreRemove(GJAPI.DATA_STORE_USER, "max-level", function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.DataStoreRemove(GJAPI.DATA_STORE_GLOBAL, "players");</p>
+
+            <p><br /></p>
+
+            <p><span class="func">GJAPI.DataStoreGetKeys</span> (iStore, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
+                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.DataStoreGetKeys(GJAPI.DATA_STORE_USER, function(pResponse)<br />
+            {<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.keys) return;<br />
+            <br />
+            &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; pResponse.keys.length; ++i)<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.keys[i].key);<br />
+            });</p>
+
+        </div>
+
+
+        <!-- **************************************************************** -->
         <!-- Miscellaneous -->
         <div class="block">
 
@@ -269,6 +352,10 @@
             <ul>
                 <li><i>string</i> <b>sUrl</b> - Relative API request string</li>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+                <li>(optional) <i>boolean</i> <b>bSendUser</b> - Automatically include username and token to the request (default: true)</li>
+                <li>(optional) <i>string</i> <b>sFormat</b> - Data return format (default: json) </li>
+                <li>(optional) <i>string</i> <b>sMethod</b> - HTTP verb to be used</li>
+                <li>(optional) <i>string</i> <b>sBodyData</b> - The content of the body to be sent</li>
             </ul>
             <p class="code">GJAPI.SendRequest("/users/?user_id=1", function(pResponse) {alert(pResponse.message);});</p>
 
@@ -277,6 +364,8 @@
             <ul>
                 <li><i>string</i> <b>sUrl</b> - Custom Ajax request string</li>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+                <li>(optional) <i>string</i> <b>sMethod</b> - HTTP verb to be used (default: GET)</li>
+                <li>(optional) <i>string</i> <b>sBodyData</b> - The content of the body to be sent</li>
             </ul>
             <p class="code">__CreateAjax("http://gamejolt.com/img/no-avatar-1.png", function(sDataString) {alert(sDataString);});</p>
 
