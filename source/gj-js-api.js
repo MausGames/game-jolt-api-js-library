@@ -367,6 +367,47 @@ GJAPI.ScoreFetch = function(iScoreTableID, bOnlyUser, iLimit, pCallback)
 
 
 // ****************************************************************
+// data store functions
+GJAPI.DATA_STORE_USER   = 0;
+GJAPI.DATA_STORE_GLOBAL = 1;
+
+GJAPI.DataStoreFetch = function(iStore, sKey, pCallback)
+{
+    // send fetch-data request
+    GJAPI.SendRequest("/data-store/?key=" + sKey, pCallback, iStore === GJAPI.DATA_STORE_USER, "dump");
+};
+
+GJAPI.DataStoreSet = function(iStore, sKey, sData, pCallback)
+{
+    // send set-data request
+    GJAPI.SendRequest("/data-store/set/?key=" + sKey,
+        pCallback, iStore === GJAPI.DATA_STORE_USER, null, "POST",
+        "data=" + sData);
+};
+
+GJAPI.DataStoreUpdate = function(iStore, sKey, sOperation, sValue, pCallback)
+{
+    // send update-data request
+    GJAPI.SendRequest("/data-store/update/"      +
+                      "?key=" + sKey             +
+                      "&operation=" + sOperation +
+                      "&value=" + sValue,
+                      pCallback, iStore === GJAPI.DATA_STORE_USER);
+};
+
+GJAPI.DataStoreRemove = function(iStore, sKey, pCallback)
+{
+    // send remove-data request
+    GJAPI.SendRequest("/data-store/remove/?key=" + sKey, pCallback, iStore === GJAPI.DATA_STORE_USER);
+};
+
+GJAPI.DataStoreGetKeys = function(iStore, pCallback)
+{
+    // send get-keys request
+    GJAPI.SendRequest("/data-store/get-keys/", pCallback, iStore === GJAPI.DATA_STORE_USER);
+};
+
+// ****************************************************************
 // create asynchronous request
 function __CreateAjax(sUrl, pCallback, sMethod, sBodyData)
 {
