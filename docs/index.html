@@ -130,7 +130,7 @@
 
             <a class="link" href="http://gamejolt.com/api/doc/game/trophies/" target="_blank">http://gamejolt.com/api/doc/game/trophies/</a>
             <h2>Trophy Functions</h2>
-
+            
             <p><span class="func">GJAPI.TrophyAchieve</span> (iTrophyID, pCallback)</p>
             <ul>
                 <li><i>number</i> <b>iTrophyID</b> - Unique ID of a trophy</li>
@@ -147,7 +147,7 @@
                 <li><i>number</i> <b>iAchieved</b> - Status of the requested trophies (GJAPI.TROPHY_*)</li>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
-
+            
             <p><span class="const">GJAPI.TROPHY_ONLY_ACHIEVED</span> = 1<br />
             <span class="const">GJAPI.TROPHY_ONLY_NOTACHIEVED</span> = -1<br />
             <span class="const">GJAPI.TROPHY_ALL</span> = 0<br /></p>
@@ -229,7 +229,10 @@
             &nbsp;&nbsp;&nbsp;&nbsp;if(!pResponse.scores) return;<br />
             <br />
             &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; pResponse.scores.length; ++i)<br />
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.scores[i].user + " - " + pResponse.scores[i].score);<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;{<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var pScore = pResponse.scores[i];<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info((pScore.user ? pScore.user : pScore.guest) + " - " + pScore.score);<br />
+            &nbsp;&nbsp;&nbsp;&nbsp;}<br />
             });</p>
 
         </div>
@@ -239,11 +242,24 @@
         <!-- Data Store -->
         <div class="block">
 
-            <a class="link" href="http://gamejolt.com/api/doc/game/scores/" target="_blank">http://gamejolt.com/api/doc/game/data-store/</a>
+            <a class="link" href="http://gamejolt.com/api/doc/game/data-store/" target="_blank">http://gamejolt.com/api/doc/game/data-store/</a>
             <h2>Data Store Functions</h2>
 
             <p><span class="const">GJAPI.DATA_STORE_USER</span> = 0<br />
             <span class="const">GJAPI.DATA_STORE_GLOBAL</span> = 1</p>
+
+            <p><br /></p>
+            
+            <p><span class="func">GJAPI.DataStoreSet</span> (iStore, sKey, sData, pCallback)</p>
+            <ul>
+                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
+                <li><i>string</i> <b>sKey</b> - The key of the data item to set</li>
+                <li><i>string</i> <b>sData</b> - The data to set</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
+            </ul>
+
+            <p class="code">GJAPI.DataStoreSet(GJAPI.DATA_STORE_USER, "max-level", "5", function(pResponse) {alert(pResponse.message);});<br />
+            GJAPI.DataStoreSet(GJAPI.DATA_STORE_GLOBAL, "players", "5");</p>
 
             <p><br /></p>
 
@@ -262,24 +278,11 @@
 
             <p><br /></p>
 
-            <p><span class="func">GJAPI.DataStoreSet</span> (iStore, sKey, sData, pCallback)</p>
-            <ul>
-                <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
-                <li><i>string</i> <b>sKey</b> - The key of the data item to set</li>
-                <li><i>string</i> <b>sData</b> - The data to set</li>
-                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
-            </ul>
-
-            <p class="code">GJAPI.DataStoreSet(GJAPI.DATA_STORE_USER, "max-level", "5", function(pResponse) {alert(pResponse.message);});<br />
-            GJAPI.DataStoreSet(GJAPI.DATA_STORE_GLOBAL, "players", "5");</p>
-
-            <p><br /></p>
-
             <p><span class="func">GJAPI.DataStoreUpdate</span> (iStore, sKey, sOperation, sValue, pCallback)</p>
             <ul>
                 <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
                 <li><i>string</i> <b>sKey</b> - The key of the data item to update</li>
-                <li><i>string</i> <b>sOperation</b> - The operation to perform</li>
+                <li><i>string</i> <b>sOperation</b> - The operation to perform (add, subtract, multiply, divide, append, prepend)</li>
                 <li><i>string</i> <b>sValue</b> - The value to work</li>
                 <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
@@ -348,27 +351,28 @@
 
             <h3>Custom Requests</h3>
 
-            <p><span class="func">GJAPI.SendRequest</span> (sUrl, pCallback)</p>
+            <p><span class="func">GJAPI.SendRequest</span> (sUrl, bSendUser, pCallback)<br />
+               <span class="func">GJAPI.SendRequestEx</span> (sUrl, bSendUser, sFormat, sBodyData, pCallback)</p>
             <ul>
                 <li><i>string</i> <b>sUrl</b> - Relative API request string</li>
-                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
-                <li>(optional) <i>boolean</i> <b>bSendUser</b> - Automatically include username and token to the request (default: true)</li>
-                <li>(optional) <i>string</i> <b>sFormat</b> - Data return format (default: json) </li>
-                <li>(optional) <i>string</i> <b>sMethod</b> - HTTP verb to be used</li>
-                <li>(optional) <i>string</i> <b>sBodyData</b> - The content of the body to be sent</li>
+                <li><i>boolean</i> <b>bSendUser</b> - Automatically include username and token to the request (GJAPI.SEND_*)</li>
+                <li><i>string</i> <b>sFormat</b> - Data return format (default: "json") </li>
+                <li><i>string</i> <b>sBodyData</b> - The content of the body to be sent (default: "")</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
-            <p class="code">GJAPI.SendRequest("/users/?user_id=1", function(pResponse) {alert(pResponse.message);});</p>
+            
+            <p><span class="const">GJAPI.SEND_USER</span> = true<br />
+            <span class="const">GJAPI.SEND_GENERAL</span> = false<br /></p>
+            
+            <p class="code">GJAPI.SendRequest("/users/?user_id=1", GJAPI.SEND_GENERAL, function(pResponse) {alert(pResponse.message);});</p>
 
-
-            <p><span class="func">__CreateAjax</span> (sUrl, pCallback)</p>
+            <p><span class="func">__CreateAjax</span> (sUrl, sBodyData, pCallback)</p>
             <ul>
                 <li><i>string</i> <b>sUrl</b> - Custom Ajax request string</li>
-                <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
-                <li>(optional) <i>string</i> <b>sMethod</b> - HTTP verb to be used (default: GET)</li>
                 <li>(optional) <i>string</i> <b>sBodyData</b> - The content of the body to be sent</li>
+                <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
-            <p class="code">__CreateAjax("http://gamejolt.com/img/no-avatar-1.png", function(sDataString) {alert(sDataString);});</p>
-
+            <p class="code">__CreateAjax("http://gamejolt.com/img/no-avatar-1.png", "", function(sDataString) {alert(sDataString);});</p>
 
             <p><br /></p>
 
@@ -388,6 +392,7 @@
 
             <p><b>Author:</b> Martin Mauersics<br />
             <b>Special Thanks to:</b> <a href="http://davidjolt.com/" target="_blank">David "CROS" DeCarmine</a>, 
+                                      <a href="http://www.assarisse.com.br/" target="_blank">Bruno Assarisse</a>, 
                                       <a href="http://gamejolt.com/profile/jnyknn/15335/" target="_blank">Jani "JNyknn" Nykänen</a>, 
                                       <a href="http://clonzework.com/" target="_blank">Travis "Clonze" Miller</a>,
                                       <a href="http://www.gardenvariety.se/" target="_blank">Garden Variety</a><br />

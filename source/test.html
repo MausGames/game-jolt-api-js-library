@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+
+        <title>Test</title>
+        <script src="gj-js-api-min.js"></script>
+
+    </head>
+
+    <body>
+    
+        <script>
+
+            var pBody = document.body;
+        
+            // ****************************************************************
+            // LOGIN
+            if(GJAPI.bActive)
+            {
+                var sSaveUserName  = GJAPI.sUserName;
+                var sSaveUserToken = GJAPI.sUserToken;
+                
+                GJAPI.UserLogout();
+                GJAPI.UserLoginManual(sSaveUserName, sSaveUserToken,
+                function(pResponse)
+                {
+                    pBody.innerHTML += "[LOGIN] " + ("User " + sSaveUserName + " logged in") + "<br>";
+                    
+                    // ****************************************************************
+                    // TROPHY
+                    var nTrophyFetchCallback = 
+                    function(pResponse)
+                    {
+                        pBody.innerHTML += "[TROPHY] " + ("Trophy " + pResponse.trophies[0].title + " (ID " + pResponse.trophies[0].id + ") fetched") + "<br>";
+                        pBody.innerHTML += "[TROPHY] " + ("<img src='" + pResponse.trophies[0].image_url + "'>") + "<br>";
+                    };
+                    
+                    GJAPI.TrophyAchieve(6506,
+                    function(pResponse)
+                    {
+                        pBody.innerHTML += "[TROPHY] " + (pResponse.message) + "<br>";
+                    });
+                    GJAPI.TrophyFetch      (GJAPI.TROPHY_ALL, nTrophyFetchCallback);
+                    GJAPI.TrophyFetchSingle(6506,             nTrophyFetchCallback);
+                    
+                    // ****************************************************************
+                    // SCORE
+                    var iNewScore = Math.floor(Math.random() * 10000);
+                    
+                    GJAPI.ScoreAdd(0, iNewScore, iNewScore + "Potatoes", null, 
+                    function(pResponse)
+                    {
+                        pBody.innerHTML += "[SCORE] " + ("User Score sent") + "<br>";
+                    
+                        GJAPI.ScoreAddGuest(0, iNewScore, iNewScore + " Potatoes", "Horsti", null, 
+                        function(pResponse)
+                        {
+                            pBody.innerHTML += "[SCORE] " + ("Guest Score sent") + "<br>";
+                            
+                            GJAPI.ScoreFetch(0, GJAPI.SCORE_ALL, 10, 
+                            function(pResponse)
+                            {
+                                for(var i = 0; i < pResponse.scores.length; ++i)
+                                {
+                                    var pScore = pResponse.scores[i];
+                                    pBody.innerHTML += "[SCORE] " + (i + ". " + (pScore.user ? pScore.user : pScore.guest) + " - " + pScore.score) + "<br>";
+                                }
+                            });
+                        });
+                    });
+                });
+            }
+            else pBody.innerHTML += "No User Credentials in URL" + "<br>";
+            
+            // ****************************************************************
+            // USER
+            var nUserFetchCallback = 
+            function(pResponse)
+            {
+                pBody.innerHTML += "[USER] " + ("User " + pResponse.users[0].username + " (ID " + pResponse.users[0].id + ") fetched") + "<br>";
+                pBody.innerHTML += "[USER] " + ("<img src='" + pResponse.users[0].avatar_url + "'>") + "<br>";
+            };
+            
+            GJAPI.UserFetchID  (1,     nUserFetchCallback);
+            GJAPI.UserFetchName("Nik", nUserFetchCallback);
+            
+            // ****************************************************************
+            // DATA STORE
+            GJAPI.DataStoreSet(GJAPI.DATA_STORE_GLOBAL, "MyData", "1234",
+            function(pResponse)
+            {
+                pBody.innerHTML += "[DATA STORE] " + ("Data set") + "<br>";
+                
+                GJAPI.DataStoreFetch(GJAPI.DATA_STORE_GLOBAL, "MyData",
+                function(pResponse)
+                {
+                    pBody.innerHTML += "[DATA STORE] " + ("Data fetched: " + pResponse.success + " " + pResponse.data) + "<br>";
+                    
+                    GJAPI.DataStoreUpdate(GJAPI.DATA_STORE_GLOBAL, "MyData", "add", "2",
+                    function(pResponse)
+                    {
+                        pBody.innerHTML += "[DATA STORE] " + ("Data updated +2") + "<br>";
+                        
+                        GJAPI.DataStoreFetch(GJAPI.DATA_STORE_GLOBAL, "MyData",
+                        function(pResponse)
+                        {
+                            pBody.innerHTML += "[DATA STORE] " + ("Data fetched again: " + pResponse.success + " " + pResponse.data) + "<br>";
+                            
+                            GJAPI.DataStoreGetKeys(GJAPI.DATA_STORE_GLOBAL, 
+                            function(pResponse)
+                            {
+                                pBody.innerHTML += "[DATA STORE] " + ("Data Store Keys fetched: " + pResponse.keys.length) + "<br>";
+                                
+                                GJAPI.DataStoreRemove(GJAPI.DATA_STORE_GLOBAL, "MyData",
+                                function(pResponse)
+                                {
+                                    pBody.innerHTML += "[DATA STORE] " + ("Data removed") + "<br>";
+                                
+                                    GJAPI.DataStoreGetKeys(GJAPI.DATA_STORE_GLOBAL, 
+                                    function(pResponse)
+                                    {
+                                        pBody.innerHTML += "[DATA STORE] " + ("Data Store Keys fetched: " + pResponse.keys.length) + "<br>";
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+            
+        </script>
+
+    </body>
+    
+</html>
