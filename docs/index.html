@@ -1,14 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" dir="ltr">
 
     <head>
 
         <title>Game Jolt API JavaScript Library</title>
 
         <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
 
         <meta name="application-name" content="Game Jolt API JavaScript Library" />
-        <meta name="author" content="Martin Mauersics" />
         <meta name="description" content="JavaScript Library to connect your game with Game Jolt, a host for free independently developed computer games." />
         <meta name="keywords" content="game jolt, api, javascript, library, free, indie" />
 
@@ -25,15 +26,14 @@
         <!-- Main -->
         <div class="block">
 
-            <a class="link" style="margin-top: 12px;" href="http://www.maus-games.at" target="_blank"><img src="http://www.maus-games.at/favicon.ico" alt="" /></a>
             <p><img src="gamejolt_js.png" alt="" title="(c) Game Jolt" /></p>
             <h1 style="display: none;">Game Jolt API JavaScript Library</h1>
 
             <h3>Installation</h3>
 
-            <p>The current library is available from <a href="http://gamejolt.com/games/other/game-jolt-api-js-library/22948/" target="_blank">Game Jolt</a> and contains all necessary files.<br />
-            It is made for browser-based JavaScript applications - for Unity please look at a <a href="http://gamejolt.com/community/forums/topics/unity-api/1803/" target=_blank">separate library</a>.</p>
-            
+            <p>The current library is available from <a href="https://gamejolt.com/games/other/game-jolt-api-js-library/22948/">Game Jolt</a> and contains all necessary files.<br />
+            It is made for browser-based JavaScript applications - for Unity please look at a <a href="https://gamejolt.com/community/forums/topics/unity-api/1803/">separate library</a>.</p>
+
             <p>To install the library into your game you have to</p>
             <ol>
                 <li>add the normal or minified JS-file to your project directory</li>
@@ -57,9 +57,9 @@
         <!-- Users -->
         <div class="block">
 
-            <a class="link" href="http://gamejolt.com/api/doc/game/users/" target="_blank">http://gamejolt.com/api/doc/game/users/</a>
+            <a class="link" href="https://gamejolt.com/api/doc/game/users/">https://gamejolt.com/api/doc/game/users/</a>
             <h2>User Functions</h2> 
-            
+
             <p><span class="func">GJAPI.UserLoginManual</span> (sUserName, sUserToken, pCallback)</p>
             <ul>
                 <li><i>string</i> <b>sUserName</b> - Login name of an user</li>
@@ -74,12 +74,12 @@
             });</p>
 
             <p><br /></p>
-            
+
             <p><span class="func">GJAPI.UserLogout</span> ()</p>
             <ul>
                 <li>Requires no parameters and no communication with the server</li>
             </ul>
-            
+
             <p><br /></p>
 
             <p><span class="func">GJAPI.UserFetchID</span> (iUserID, pCallback)</p>
@@ -128,9 +128,9 @@
         <!-- Trophies -->
         <div class="block">
 
-            <a class="link" href="http://gamejolt.com/api/doc/game/trophies/" target="_blank">http://gamejolt.com/api/doc/game/trophies/</a>
+            <a class="link" href="https://gamejolt.com/api/doc/game/trophies/">https://gamejolt.com/api/doc/game/trophies/</a>
             <h2>Trophy Functions</h2>
-            
+
             <p><span class="func">GJAPI.TrophyAchieve</span> (iTrophyID, pCallback)</p>
             <ul>
                 <li><i>number</i> <b>iTrophyID</b> - Unique ID of a trophy</li>
@@ -147,7 +147,7 @@
                 <li><i>number</i> <b>iAchieved</b> - Status of the requested trophies (GJAPI.TROPHY_*)</li>
                 <li><i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
-            
+
             <p><span class="const">GJAPI.TROPHY_ONLY_ACHIEVED</span> = 1<br />
             <span class="const">GJAPI.TROPHY_ONLY_NOTACHIEVED</span> = -1<br />
             <span class="const">GJAPI.TROPHY_ALL</span> = 0<br /></p>
@@ -159,7 +159,7 @@
             &nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; pResponse.trophies.length; ++i)<br />
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.info(pResponse.trophies[i].id + " - " + pResponse.trophies[i].title);<br />
             });</p>
-            
+
             <p><br /></p>
 
             <p><span class="func">GJAPI.TrophyFetchSingle</span> (iTrophyID, pCallback)</p>
@@ -181,7 +181,7 @@
         <!-- Scores -->
         <div class="block">
 
-            <a class="link" href="http://gamejolt.com/api/doc/game/scores/" target="_blank">http://gamejolt.com/api/doc/game/scores/</a>
+            <a class="link" href="https://gamejolt.com/api/doc/game/scores/">https://gamejolt.com/api/doc/game/scores/</a>
             <h2>Score Functions</h2>
 
             <p><span class="func">GJAPI.ScoreAdd</span> (iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)</p>
@@ -242,14 +242,14 @@
         <!-- Data Store -->
         <div class="block">
 
-            <a class="link" href="http://gamejolt.com/api/doc/game/data-store/" target="_blank">http://gamejolt.com/api/doc/game/data-store/</a>
+            <a class="link" href="https://gamejolt.com/api/doc/game/data-store/">https://gamejolt.com/api/doc/game/data-store/</a>
             <h2>Data Store Functions</h2>
 
             <p><span class="const">GJAPI.DATA_STORE_USER</span> = 0<br />
             <span class="const">GJAPI.DATA_STORE_GLOBAL</span> = 1</p>
 
             <p><br /></p>
-            
+
             <p><span class="func">GJAPI.DataStoreSet</span> (iStore, sKey, sData, pCallback)</p>
             <ul>
                 <li><i>number</i> <b>iStore</b> - Scope of the operation, global or per user (GJAPI.DATA_STORE_*)</li>
@@ -331,7 +331,7 @@
 
             <p class="func">Read-Only</p>
             <ul>
-                <li><i>boolean</i> <b>GJAPI.bActive</b> - User recognized and logged in</li>
+                <li><i>boolean</i> <b>GJAPI.bLoggedIn</b> - User recognized and logged in</li>
                 <li><i>string</i> <b>GJAPI.sUserName</b> - Current User Name</li>
                 <li><i>string</i> <b>GJAPI.sUserToken</b> - Current User Token</li>
             </ul>
@@ -360,10 +360,10 @@
                 <li><i>string</i> <b>sBodyData</b> - The content of the body to be sent (default: "")</li>
                 <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
-            
-            <p><span class="const">GJAPI.SEND_USER</span> = true<br />
+
+            <p><span class="const">GJAPI.SEND_FOR_USER</span> = true<br />
             <span class="const">GJAPI.SEND_GENERAL</span> = false<br /></p>
-            
+
             <p class="code">GJAPI.SendRequest("/users/?user_id=1", GJAPI.SEND_GENERAL, function(pResponse) {alert(pResponse.message);});</p>
 
             <p><span class="func">__CreateAjax</span> (sUrl, sBodyData, pCallback)</p>
@@ -372,7 +372,7 @@
                 <li>(optional) <i>string</i> <b>sBodyData</b> - The content of the body to be sent</li>
                 <li>(optional) <i>function</i> <b>pCallback</b> - Callback function receiving a response object from the server</li>
             </ul>
-            <p class="code">__CreateAjax("http://gamejolt.com/img/no-avatar-1.png", "", function(sDataString) {alert(sDataString);});</p>
+            <p class="code">__CreateAjax("https://gamejolt.com/img/no-avatar-1.png", "", function(sDataString) {alert(sDataString);});</p>
 
             <p><br /></p>
 
@@ -390,39 +390,41 @@
 
             <h2>Credits</h2>
 
-            <p><b>Author:</b> Martin Mauersics<br />
-            <b>Special Thanks to:</b> <a href="http://davidjolt.com/" target="_blank">David "CROS" DeCarmine</a>, 
-                                      <a href="http://www.assarisse.com.br/" target="_blank">Bruno Assarisse</a>, 
-                                      <a href="http://gamejolt.com/profile/jnyknn/15335/" target="_blank">Jani "JNyknn" Nykänen</a>, 
-                                      <a href="http://clonzework.com/" target="_blank">Travis "Clonze" Miller</a>,
-                                      <a href="http://www.gardenvariety.se/" target="_blank">Garden Variety</a><br />
-            This is a 3rd party software which is not directly affiliated with Game Jolt or Lucent Web Creative, LLC.</p>
+            <b>Special Thanks to:</b> <a href="https://twitter.com/theytookcros">David "CROS" DeCarmine</a>, 
+                                      <a href="https://twitter.com/bassarisse">Bruno Assarisse</a>, 
+                                      <a href="https://twitter.com/jani_m_n">Jani "JNyknn" Nykänen</a>, 
+                                      <a href="https://twitter.com/clonzeh">Travis "Clonze" Miller</a>,
+                                      <a href="https://twitter.com/gardenvarietyse">Garden Variety</a><br />
+            This is 3rd party software which is not directly affiliated with Game Jolt or Lucent Web Creative, LLC.</p>
 
             <h3>Additional Libraries</h3>
 
-            <p>JavaScript implementation of the RSA Data Security, Inc. MD5 Message Digest Algorithm by Paul Johnston (<a href="http://pajhome.org.uk/" target="_blank">http://pajhome.org.uk/</a>)</p>
+            <p>JavaScript implementation of the RSA Data Security, Inc. MD5 Message Digest Algorithm by Paul Johnston (<a href="https://pajhome.org.uk/">https://pajhome.org.uk/</a>)</p>
 
             <h3>Software License</h3>
 
-            <p>Copyright (c) 2014-2015 Martin Mauersics<br />
-            <br />
-            This software is provided 'as-is', without any express or implied<br />
-            warranty. In no event will the authors be held liable for any damages<br />
-            arising from the use of this software.<br /><br />
-            Permission is granted to anyone to use this software for any purpose,<br />
-            including commercial applications, and to alter it and redistribute it<br />
-            freely, subject to the following restrictions:</p>
-            <ol>
-                <li>The origin of this software must not be misrepresented; you must not<br />
-                claim that you wrote the original software. If you use this software<br />
-                in a product, an acknowledgment in the product documentation would be<br />
-                appreciated but is not required.</li>
-                <li>Altered source versions must be plainly marked as such, and must not be<br />
-                misrepresented as being the original software.</li>
-                <li>This notice may not be removed or altered from any source<br />
-                distribution.</li>
-                <li>This software may only be used within the <a href="http://gamejolt.com/terms/" target="_blank">terms of Game Jolt</a>.</li>
-            </ol>
+            <p>This is free and unencumbered software released into the public domain.<br /><br />
+
+            Anyone is free to copy, modify, publish, use, compile, sell, or<br />
+            distribute this software, either in source code form or as a compiled<br />
+            binary, for any purpose, commercial or non-commercial, and by any<br />
+            means.<br /><br />
+
+            In jurisdictions that recognize copyright laws, the author or authors<br />
+            of this software dedicate any and all copyright interest in the<br />
+            software to the public domain. We make this dedication for the benefit<br />
+            of the public at large and to the detriment of our heirs and<br />
+            successors. We intend this dedication to be an overt act of<br />
+            relinquishment in perpetuity of all present and future rights to this<br />
+            software under copyright law.<br /><br />
+
+            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,<br />
+            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF<br />
+            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.<br />
+            IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR<br />
+            OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,<br />
+            ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR<br />
+            OTHER DEALINGS IN THE SOFTWARE.</p>
 
         </div>
 

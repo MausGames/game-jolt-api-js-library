@@ -15,7 +15,7 @@ And if your game is written in JavaScript, then **this library is able to connec
 #
 
 **Documentation:**  
-<http://www.maus-games.at/files/gamejolt/js/>
+<https://www.maus-games.at/files/gamejolt/js/>
 
-[1]: http://gamejolt.com
-[2]: http://gamejolt.com/developers/achievements-new/
+[1]: https://gamejolt.com
+[2]: https://gamejolt.com/developers/achievements-new/

@@ -1,46 +1,36 @@
-////////////////////////////////////////////////////////////////////////////////////////////
-//*--------------------------------------------------------------------------------------*//
-//|   ______    ______    __    __    ______          __    ______    __        ______   |//
-//|  /\  ___\  /\  __ \  /\ "-./  \  /\  ___\        /\ \  /\  __ \  /\ \      /\__  _\  |//
-//|  \ \ \__ \ \ \  __ \ \ \ \-./\ \ \ \  __\       _\_\ \ \ \ \/\ \ \ \ \____ \/_/\ \/  |//
-//|   \ \_____\ \ \_\ \_\ \ \_\ \ \_\ \ \_____\    /\_____\ \ \_____\ \ \_____\   \ \_\  |//
-//|    \/_____/  \/_/\/_/  \/_/  \/_/  \/_____/    \/_____/  \/_____/  \/_____/    \/_/  |//
-//|                                                                                      |//
-//*--------------------------------------------------------------------------------------*//
-////////////////////////////////////////////////////////////////////////////////////////////
-//*--------------------------------------------------------------------------------------*//
-//| Game Jolt API JS Library v0.4a (http://gamejolt.com)                                 |//
-//*--------------------------------------------------------------------------------------*//
-//| Special Thanks to:                                                                   |//
-//|                                                                                      |//
-//| David "CROS" DeCarmine, Bruno Assarisse, Jani "JNyknn" Nykänen,                      |//
-//| Travis "Clonze" Miller, Garden Variety                                               |//
-//*--------------------------------------------------------------------------------------*//
-//| Copyright (c) 2014-2015 Martin Mauersics                                             |//
-//|                                                                                      |//
-//| This software is provided 'as-is', without any express or implied                    |//
-//| warranty. In no event will the authors be held liable for any damages                |//
-//| arising from the use of this software.                                               |//
-//|                                                                                      |//
-//| Permission is granted to anyone to use this software for any purpose,                |//
-//| including commercial applications, and to alter it and redistribute it               |//
-//| freely, subject to the following restrictions:                                       |//
-//|                                                                                      |//
-//|   1. The origin of this software must not be misrepresented; you must not            |//
-//|   claim that you wrote the original software. If you use this software               |//
-//|   in a product, an acknowledgment in the product documentation would be              |//
-//|   appreciated but is not required.                                                   |//
-//|                                                                                      |//
-//|   2. Altered source versions must be plainly marked as such, and must not be         |//
-//|   misrepresented as being the original software.                                     |//
-//|                                                                                      |//
-//|   3. This notice may not be removed or altered from any source                       |//
-//|   distribution.                                                                      |//
-//|                                                                                      |//
-//|   4. This software may only be used within the terms of Game Jolt.                   |//
-//|   (http://gamejolt.com/terms/)                                                       |//
-//*--------------------------------------------------------------------------------------*//
-////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//*-------------------------------------------------------------------------*//
+//| Game Jolt API JS Library v1.1.0 (https://gamejolt.com)                  |//
+//*-------------------------------------------------------------------------*//
+//| Special Thanks to:                                                      |//
+//|                                                                         |//
+//| David "CROS" DeCarmine, Bruno Assarisse, Jani "JNyknn" Nykänen,         |//
+//| Travis "Clonze" Miller, Garden Variety                                  |//
+//*-------------------------------------------------------------------------*//
+//| This is free and unencumbered software released into the public domain. |//
+//|                                                                         |//
+//| Anyone is free to copy, modify, publish, use, compile, sell, or         |//
+//| distribute this software, either in source code form or as a compiled   |//
+//| binary, for any purpose, commercial or non-commercial, and by any       |//
+//| means.                                                                  |//
+//|                                                                         |//
+//| In jurisdictions that recognize copyright laws, the author or authors   |//
+//| of this software dedicate any and all copyright interest in the         |//
+//| software to the public domain. We make this dedication for the benefit  |//
+//| of the public at large and to the detriment of our heirs and            |//
+//| successors. We intend this dedication to be an overt act of             |//
+//| relinquishment in perpetuity of all present and future rights to this   |//
+//| software under copyright law.                                           |//
+//|                                                                         |//
+//| THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,         |//
+//| EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF      |//
+//| MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  |//
+//| IN NO EVENT SHALL THE AUTHORS BE LIABLE FOR ANY CLAIM, DAMAGES OR       |//
+//| OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,   |//
+//| ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR   |//
+//| OTHER DEALINGS IN THE SOFTWARE.                                         |//
+//*-------------------------------------------------------------------------*//
+///////////////////////////////////////////////////////////////////////////////
 "use strict";
 var GJAPI = {};
 
@@ -54,7 +44,7 @@ GJAPI.sGameKey   = "";     // # change this too
 GJAPI.bAutoLogin = true;   // automatically log in users on Game Jolt
 if(GJAPI.iGameID === 0 || GJAPI.sGameKey === "") alert("Game ID or Game Key missing!");
 
-GJAPI.sAPI      = "http://gamejolt.com/api/game/v1";
+GJAPI.sAPI      = "https://gamejolt.com/api/game/v1";
 GJAPI.sLogName  = "[Game Jolt API]";
 GJAPI.iLogStack = 20;
 
@@ -91,7 +81,7 @@ GJAPI.LogTrace = function(sMessage)
     // prevent flooding
     if(!(  GJAPI.iLogStack)) return;
     if(!(--GJAPI.iLogStack)) sMessage = "(╯°□°）╯︵ ┻━┻";
-    
+
     // log message and stack trace
     console.warn(GJAPI.sLogName + " " + sMessage);
     console.trace();
@@ -100,8 +90,8 @@ GJAPI.LogTrace = function(sMessage)
 
 // ****************************************************************
 // main functions
-GJAPI.SEND_USER    = true;
-GJAPI.SEND_GENERAL = false;
+GJAPI.SEND_FOR_USER = true;
+GJAPI.SEND_GENERAL  = false;
 
 GJAPI.SendRequest = function(sURL, bSendUser, pCallback)
 {
@@ -118,7 +108,7 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
            "&format=" + sFormat;
 
     // add credentials of current user (for user-related operations)
-    if(GJAPI.bActive && (bSendUser === GJAPI.SEND_USER))
+    if(GJAPI.bLoggedIn && (bSendUser === GJAPI.SEND_FOR_USER))
     {
         sURL += "&username="   + GJAPI.sUserName +
                 "&user_token=" + GJAPI.sUserToken
@@ -138,19 +128,19 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
         case "json":
             pCallback(eval("(" + sResponse + ")").response);
             break;
-            
+
         case "dump":
             var iLineBreakIndex = sResponse.indexOf("\n");
             var sResult = sResponse.substr(0, iLineBreakIndex - 1);
             var sData   = sResponse.substr(iLineBreakIndex + 1);
-        
+
             pCallback
             ({
                 success: sResult === "SUCCESS",
                 data:    sData
             });
             break;
-        
+
         default:
             pCallback(sResponse);
             break;
@@ -159,14 +149,14 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
 };
 
 // automatically retrieve and log in current user on Game Jolt 
-GJAPI.bActive    = (GJAPI.bAutoLogin && GJAPI.asQueryParam["gjapi_username"] && GJAPI.asQueryParam["gjapi_token"]) ? true : false;
-GJAPI.sUserName  = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_username"] : "";
-GJAPI.sUserToken = GJAPI.bActive ? GJAPI.asQueryParam["gjapi_token"]    : "";
+GJAPI.bLoggedIn  = (GJAPI.bAutoLogin && GJAPI.asQueryParam["gjapi_username"] && GJAPI.asQueryParam["gjapi_token"]) ? true : false;
+GJAPI.sUserName  = GJAPI.bLoggedIn ? GJAPI.asQueryParam["gjapi_username"] : "";
+GJAPI.sUserToken = GJAPI.bLoggedIn ? GJAPI.asQueryParam["gjapi_token"]    : "";
 
 // send some information to the console
 console.info(GJAPI.asQueryParam);
-console.info(GJAPI.sLogName + (GJAPI.bOnGJ   ? " E" : " Not e") + "mbedded on Game Jolt <" + window.location.origin + window.location.pathname + ">");
-console.info(GJAPI.sLogName + (GJAPI.bActive ? " U" : " No u")  + "ser recognized <"       + GJAPI.sUserName + ">");
+console.info(GJAPI.sLogName + (GJAPI.bOnGJ     ? " E" : " Not e") + "mbedded on Game Jolt <" + window.location.origin + window.location.pathname + ">");
+console.info(GJAPI.sLogName + (GJAPI.bLoggedIn ? " U" : " No u")  + "ser recognized <"       + GJAPI.sUserName + ">");
 if(!window.location.hostname) console.warn(GJAPI.sLogName + " XMLHttpRequest may not work properly on a local environment");
 
 
@@ -176,13 +166,13 @@ GJAPI.bSessionActive = true;
 
 GJAPI.SessionOpen = function()
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("SessionOpen() failed: no user logged in"); return;}
-    
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("SessionOpen() failed: no user logged in"); return;}
+
     // check for already open session
     if(GJAPI.iSessionHandle) return;
 
     // send open-session request
-    GJAPI.SendRequest("/sessions/open/", GJAPI.SEND_USER,
+    GJAPI.SendRequest("/sessions/open/", GJAPI.SEND_FOR_USER,
     function(pResponse)
     {
         // check for success
@@ -197,38 +187,38 @@ GJAPI.SessionOpen = function()
 
 GJAPI.SessionPing = function()
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("SessionPing() failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("SessionPing() failed: no user logged in"); return;}
 
     // send ping-session request
-    GJAPI.SendRequest("/sessions/ping/?status=" + (GJAPI.bSessionActive ? "active" : "idle"), GJAPI.SEND_USER);
+    GJAPI.SendRequest("/sessions/ping/?status=" + (GJAPI.bSessionActive ? "active" : "idle"), GJAPI.SEND_FOR_USER);
 };
 
 GJAPI.SessionClose = function()
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("SessionClose() failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("SessionClose() failed: no user logged in"); return;}
 
     if(GJAPI.iSessionHandle)
     {
         // remove automatic session ping and close
         window.clearInterval(GJAPI.iSessionHandle);
         window.removeEventListener("beforeunload", GJAPI.SessionClose);
-        
+
         GJAPI.iSessionHandle = 0;
     }
-    
+
     // send close-session request
-    GJAPI.SendRequest("/sessions/close/", GJAPI.SEND_USER);
+    GJAPI.SendRequest("/sessions/close/", GJAPI.SEND_FOR_USER);
 };
 
 // automatically start player session
-if(GJAPI.bActive) GJAPI.SessionOpen();
+if(GJAPI.bLoggedIn) GJAPI.SessionOpen();
 
 
 // ****************************************************************
 // user functions
 GJAPI.UserLoginManual = function(sUserName, sUserToken, pCallback)
 {
-    if(GJAPI.bActive) {GJAPI.LogTrace("UserLoginManual(" + sUserName + ", " + sUserToken + ") failed: user " + GJAPI.sUserName + " already logged in"); return;}
+    if(GJAPI.bLoggedIn) {GJAPI.LogTrace("UserLoginManual(" + sUserName + ", " + sUserToken + ") failed: user " + GJAPI.sUserName + " already logged in"); return;}
 
     // send authentication request
     GJAPI.SendRequest("/users/auth/"             +
@@ -241,14 +231,14 @@ GJAPI.UserLoginManual = function(sUserName, sUserToken, pCallback)
         if(pResponse.success)
         {
             // save login properties
-            GJAPI.bActive    = true;
+            GJAPI.bLoggedIn  = true;
             GJAPI.sUserName  = sUserName;
             GJAPI.sUserToken = sUserToken;
-            
+
             // open session
             GJAPI.SessionOpen();
         }
-        
+
         // execute nested callback
         if(typeof pCallback === "function")
             pCallback(pResponse);
@@ -258,16 +248,16 @@ GJAPI.UserLoginManual = function(sUserName, sUserToken, pCallback)
 
 GJAPI.UserLogout = function()
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("UserLogout() failed: no user logged in"); return;}
-    
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("UserLogout() failed: no user logged in"); return;}
+
     // close session
     GJAPI.SessionClose();
-    
+
     // reset login properties
-    GJAPI.bActive    = false;
+    GJAPI.bLoggedIn  = false;
     GJAPI.sUserName  = "";
     GJAPI.sUserToken = "";
-    
+
     // reset trophy cache
     GJAPI.abTrophyCache = {};
 };
@@ -286,7 +276,7 @@ GJAPI.UserFetchName = function(sUserName, pCallback)
 
 GJAPI.UserFetchCurrent = function(pCallback)
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("UserFetchCurrent() failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("UserFetchCurrent() failed: no user logged in"); return;}
 
     // send fetch-user request
     GJAPI.UserFetchName(GJAPI.sUserName, pCallback);
@@ -303,13 +293,13 @@ GJAPI.TROPHY_ALL              =  0;
 
 GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("TrophyAchieve(" + iTrophyID + ") failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("TrophyAchieve(" + iTrophyID + ") failed: no user logged in"); return;}
 
     // check for already achieved trophy
     if(GJAPI.abTrophyCache[iTrophyID]) return;
 
     // send achieve-trophy request
-    GJAPI.SendRequest("/trophies/add-achieved/?trophy_id=" + iTrophyID, GJAPI.SEND_USER,
+    GJAPI.SendRequest("/trophies/add-achieved/?trophy_id=" + iTrophyID, GJAPI.SEND_FOR_USER,
     function(pResponse)
     {
         // check for success
@@ -318,7 +308,7 @@ GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
             // save status
             GJAPI.abTrophyCache[iTrophyID] = true;
         }
-        
+
         // execute nested callback
         if(typeof pCallback === "function") 
             pCallback(pResponse);
@@ -327,22 +317,22 @@ GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
 
 GJAPI.TrophyFetch = function(iAchieved, pCallback)
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("TrophyFetch(" + iAchieved + ") failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("TrophyFetch(" + iAchieved + ") failed: no user logged in"); return;}
 
     // only trophies with the requested status
     var sTrophyData = (iAchieved === GJAPI.TROPHY_ALL) ? "" :
                       "?achieved=" + ((iAchieved >= GJAPI.TROPHY_ONLY_ACHIEVED) ? "true" : "false");
 
     // send fetch-trophy request
-    GJAPI.SendRequest("/trophies/" + sTrophyData, GJAPI.SEND_USER, pCallback);
+    GJAPI.SendRequest("/trophies/" + sTrophyData, GJAPI.SEND_FOR_USER, pCallback);
 };
 
 GJAPI.TrophyFetchSingle = function(iTrophyID, pCallback)
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("TrophyFetchSingle(" + iTrophyID + ") failed: no user logged in"); return;}
 
     // send fetch-trophy request
-    GJAPI.SendRequest("/trophies/?trophy_id=" + iTrophyID, GJAPI.SEND_USER, pCallback);
+    GJAPI.SendRequest("/trophies/?trophy_id=" + iTrophyID, GJAPI.SEND_FOR_USER, pCallback);
 };
 
 
@@ -353,7 +343,7 @@ GJAPI.SCORE_ALL       = false;
 
 GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pCallback)
 {
-    if(!GJAPI.bActive) {GJAPI.LogTrace("ScoreAdd(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("ScoreAdd(" + iScoreTableID + ", " + iScoreValue + ", " + sScoreText + ") failed: no user logged in"); return;}
 
     // send add-score request
     GJAPI.ScoreAddGuest(iScoreTableID, iScoreValue, sScoreText, "", sExtraData, pCallback);
@@ -371,21 +361,21 @@ GJAPI.ScoreAddGuest = function(iScoreTableID, iScoreValue, sScoreText, sGuestNam
                       (bIsGuest      ? ("&guest="      + sGuestName)    : "") +
                       (iScoreTableID ? ("&table_id="   + iScoreTableID) : "") +
                       (sExtraData    ? ("&extra_data=" + sExtraData)    : ""),
-                      (bIsGuest ? GJAPI.SEND_GENERAL : GJAPI.SEND_USER), pCallback);
+                      (bIsGuest ? GJAPI.SEND_GENERAL : GJAPI.SEND_FOR_USER), pCallback);
 };
 
 GJAPI.ScoreFetch = function(iScoreTableID, bOnlyUser, iLimit, pCallback)
 {
-    if(!GJAPI.bActive && bOnlyUser) {GJAPI.LogTrace("ScoreFetch(" + iScoreTableID + ", " + bOnlyUser + ", " + iLimit + ") failed: no user logged in"); return;}
+    if(!GJAPI.bLoggedIn && bOnlyUser) {GJAPI.LogTrace("ScoreFetch(" + iScoreTableID + ", " + bOnlyUser + ", " + iLimit + ") failed: no user logged in"); return;}
 
     // only scores from the current user or all scores
     var bFetchAll = (bOnlyUser === GJAPI.SCORE_ONLY_USER) ? false : true;
-    
+
     // send fetch-score request
     GJAPI.SendRequest("/scores/"         +
                       "?limit=" + iLimit +
                       (iScoreTableID ? ("&table_id=" + iScoreTableID) : ""),
-                      (bFetchAll ? GJAPI.SEND_GENERAL : GJAPI.SEND_USER), pCallback);
+                      (bFetchAll ? GJAPI.SEND_GENERAL : GJAPI.SEND_FOR_USER), pCallback);
 };
 
 
@@ -433,7 +423,7 @@ GJAPI.DataStoreGetKeys = function(iStore, pCallback)
 function __CreateAjax(sUrl, sBodyData, pCallback)
 {
     if(typeof sBodyData !== "string") sBodyData = "";
-    
+
     if(window.XMLHttpRequest)
     {
         var pRequest = new XMLHttpRequest();
