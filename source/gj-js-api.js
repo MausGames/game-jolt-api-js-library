@@ -178,7 +178,7 @@ GJAPI.SessionOpen = function()
     function(pResponse)
     {
         // check for success
-        if(pResponse.success)
+        if(pResponse.success == 'true')
         {
             // add automatic session ping and close
             GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
@@ -230,7 +230,7 @@ GJAPI.UserLoginManual = function(sUserName, sUserToken, pCallback)
     function(pResponse)
     {
         // check for success
-        if(pResponse.success)
+        if(pResponse.success == 'true')  // The response object's success property is a string and not a boolean, that's why there is stuff like this
         {
             // save login properties
             GJAPI.bLoggedIn  = true;
@@ -305,7 +305,7 @@ GJAPI.TrophyAchieve = function(iTrophyID, pCallback)
     function(pResponse)
     {
         // check for success
-        if(pResponse.success == 'true') // Apparently the response object's success property is a string and not a boolean
+        if(pResponse.success == 'true')
         {
             // save status
             GJAPI.abTrophyCache[iTrophyID] = true;
