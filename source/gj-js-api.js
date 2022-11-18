@@ -501,42 +501,6 @@ GJAPI.SessionCheck = function (pCallback) {
     GJAPI.SendRequest('/sessions/check/?game_id=' + GJAPI.iGameID + '&username=' + GJAPI.sUserName + '&user_token=' + GJAPI.sUserToken, GJAPI.SEND_GENERAL, pCallback);
 };
 
-/* SessionOpen and SessionClose combined */
-GJAPI.SessionSetStatus = function (isOpen) {
-    if (!GJAPI.bLoggedIn) { GJAPI.LogTrace('SessionSetStatus(' + isOpen + ') failed: no user logged in'); return; }
-    if (isOpen) {
-        if (GJAPI.iSessionHandle) {
-            return;
-        }
-        GJAPI.SendRequest("/sessions/open/", GJAPI.SEND_FOR_USER,
-        function (pResponse)
-        {
-            if (pResponse.success) {
-                GJAPI.iSessionHandle = window.setInterval(GJAPI.SessionPing, 30000);
-                window.addEventListener("beforeunload", GJAPI.SessionClose, false);
-            }
-            });
-        return;
-    }
-    if (GJAPI.iSessionHandle) {
-        window.clearInterval(GJAPI.iSessionHandle);
-        window.removeEventListener("beforeunload", GJAPI.SessionClose);
-        GJAPI.iSessionHandle = 0;
-    }
-    GJAPI.SendRequest("/sessions/close/", GJAPI.SEND_FOR_USER);
-};
-
-/* UserFetchName and UserFetchID combined
- * Use GJAPI.FETCH_USERNAME and GJAPI.FETCH_ID for better code readability
- */
-GJAPI.UserFetchComb = function (isUsername, value, pCallback) {
-    if (isUsername) {
-        GJAPI.SendRequest("/users/?username=" + value, GJAPI.SEND_GENERAL, pCallback);
-        return;
-    }
-    GJAPI.SendRequest("/users/?user_id=" + value, GJAPI.SEND_GENERAL, pCallback);
-};
-
 /* ScoreFetch but with better_than and worse_than parameters
  * Use GJAPI.BETTER_THAN and GJAPI.WORSE_THAN for better code readability
  * If iValue is set to 0 it will work like riginal ScoreFetch
