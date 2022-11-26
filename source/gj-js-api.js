@@ -39,9 +39,11 @@ var GJAPI = {};
 
 // ****************************************************************
 // configuration attributes
-GJAPI.iGameID    = 0;      // # change this
-GJAPI.sGameKey   = "";     // # change this too
-GJAPI.bAutoLogin = true;   // automatically log in users on Game Jolt
+GJAPI.iGameID    = 0;       // # change this
+GJAPI.sGameKey   = "";      // # change this too
+GJAPI.bAutoLogin = true;    // automatically log in users on Game Jolt
+GJAPI.bDebugMode = false;   // enable verbose console logging
+
 if(GJAPI.iGameID === 0 || GJAPI.sGameKey === "") alert("Game ID or Game Key missing!");
 
 GJAPI.sAPIold   = "https://gamejolt.com/api/game/v1";
@@ -122,7 +124,8 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
     // send off the request
     __CreateAjax(sURL, sBodyData, function(sResponse)
     {
-        console.info(GJAPI.sLogName + " <" + sURL + "> " + sResponse);
+        if(GJAPI.bDebugMode) console.info(GJAPI.sLogName + " <" + sURL + "> " + sResponse);
+
         if((sResponse === "") || (typeof pCallback !== "function")) return;
 
         switch(sFormat) 
