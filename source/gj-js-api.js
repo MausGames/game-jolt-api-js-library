@@ -1,11 +1,11 @@
 ///////////////////////////////////////////////////////////////////////////////
 //*-------------------------------------------------------------------------*//
-//| Game Jolt API JS Library v1.1.0 (https://gamejolt.com)                  |//
+//| Game Jolt API JS Library v1.2.0 (https://gamejolt.com)                  |//
 //*-------------------------------------------------------------------------*//
 //| Special Thanks to:                                                      |//
 //|                                                                         |//
 //| David "CROS" DeCarmine, Bruno Assarisse, Jani "JNyknn" Nykänen,         |//
-//| Travis "Clonze" Miller, Garden Variety                                  |//
+//| Travis "Clonze" Miller, Garden Variety, softed                          |//
 //*-------------------------------------------------------------------------*//
 //| This is free and unencumbered software released into the public domain. |//
 //|                                                                         |//
