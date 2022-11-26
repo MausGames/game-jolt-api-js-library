@@ -32,7 +32,7 @@
 //*-------------------------------------------------------------------------*//
 ///////////////////////////////////////////////////////////////////////////////
 "use strict";
-var GJAPI = {};
+const GJAPI = {};
 
 // TODO: add login-check + error-msg on user-data-store operations without current user ?
 
@@ -56,14 +56,14 @@ GJAPI.iLogStack = 20;
 // utility functions
 GJAPI.asQueryParam = function()
 {
-    var asOutput = {};
-    var asList   = window.location.search.substring(1).split("&");
+    const asOutput = {};
+    const asList   = window.location.search.substring(1).split("&");
 
     // loop through all parameters
-    for(var i = 0; i < asList.length; ++i)
+    for(let i = 0; i < asList.length; ++i)
     {
         // separate key from value
-        var asPair = asList[i].split("=");
+        const asPair = asList[i].split("=");
 
         // insert value into map
         if(typeof asOutput[asPair[0]] === "undefined")
@@ -135,9 +135,9 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
             break;
 
         case "dump":
-            var iLineBreakIndex = sResponse.indexOf("\n");
-            var sResult = sResponse.substr(0, iLineBreakIndex - 1);
-            var sData   = sResponse.substr(iLineBreakIndex + 1);
+            const iLineBreakIndex = sResponse.indexOf("\n");
+            const sResult = sResponse.substring(0, iLineBreakIndex - 1);
+            const sData   = sResponse.substring(iLineBreakIndex + 1);
 
             pCallback
             ({
@@ -325,8 +325,8 @@ GJAPI.TrophyFetch = function(iAchieved, pCallback)
     if(!GJAPI.bLoggedIn) {GJAPI.LogTrace("TrophyFetch(" + iAchieved + ") failed: no user logged in"); return;}
 
     // only trophies with the requested status
-    var sTrophyData = (iAchieved === GJAPI.TROPHY_ALL) ? "" :
-                      "?achieved=" + ((iAchieved >= GJAPI.TROPHY_ONLY_ACHIEVED) ? "true" : "false");
+    const sTrophyData = (iAchieved === GJAPI.TROPHY_ALL) ? "" :
+                        "?achieved=" + ((iAchieved >= GJAPI.TROPHY_ONLY_ACHIEVED) ? "true" : "false");
 
     // send fetch-trophy request
     GJAPI.SendRequest("/trophies/" + sTrophyData, GJAPI.SEND_FOR_USER, pCallback);
@@ -357,7 +357,7 @@ GJAPI.ScoreAdd = function(iScoreTableID, iScoreValue, sScoreText, sExtraData, pC
 GJAPI.ScoreAddGuest = function(iScoreTableID, iScoreValue, sScoreText, sGuestName, sExtraData, pCallback)
 {
     // use current user data or guest name
-    var bIsGuest = (sGuestName && sGuestName.length) ? true : false;
+    const bIsGuest = (sGuestName && sGuestName.length) ? true : false;
 
     // send add-score request
     GJAPI.SendRequest("/scores/add/"                                          +
@@ -374,7 +374,7 @@ GJAPI.ScoreFetch = function(iScoreTableID, bOnlyUser, iLimit, pCallback)
     if(!GJAPI.bLoggedIn && bOnlyUser) {GJAPI.LogTrace("ScoreFetch(" + iScoreTableID + ", " + bOnlyUser + ", " + iLimit + ") failed: no user logged in"); return;}
 
     // only scores from the current user or all scores
-    var bFetchAll = (bOnlyUser === GJAPI.SCORE_ONLY_USER) ? false : true;
+    const bFetchAll = (bOnlyUser === GJAPI.SCORE_ONLY_USER) ? false : true;
 
     // send fetch-score request
     GJAPI.SendRequest("/scores/"         +
@@ -431,7 +431,7 @@ function __CreateAjax(sUrl, sBodyData, pCallback)
 
     if(window.XMLHttpRequest)
     {
-        var pRequest = new XMLHttpRequest();
+        const pRequest = new XMLHttpRequest();
 
         // bind callback function
         pRequest.onreadystatechange = function()

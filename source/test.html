@@ -12,7 +12,7 @@
 
         <script>
 
-            var pBody = document.body;
+            const pBody = document.body;
 
             pBody.innerHTML += "Test-ID: 22948" + "<br>";
             pBody.innerHTML += "Test-Key: 061264c54a25c00fa065532296ebd8c9" + "<br>";
@@ -21,8 +21,8 @@
             // LOGIN
             if(GJAPI.bLoggedIn)
             {
-                var sSaveUserName  = GJAPI.sUserName;
-                var sSaveUserToken = GJAPI.sUserToken;
+                const sSaveUserName  = GJAPI.sUserName;
+                const sSaveUserToken = GJAPI.sUserToken;
 
                 GJAPI.UserLogout();
                 GJAPI.UserLoginManual(sSaveUserName, sSaveUserToken,
@@ -32,7 +32,7 @@
 
                     // ****************************************************************
                     // TROPHY
-                    var nTrophyFetchCallback = 
+                    const nTrophyFetchCallback = 
                     function(pResponse)
                     {
                         pBody.innerHTML += "[TROPHY] " + ("Trophy " + pResponse.trophies[0].title + " (ID " + pResponse.trophies[0].id + ") fetched") + "<br>";
@@ -49,7 +49,7 @@
 
                     // ****************************************************************
                     // SCORE
-                    var iNewScore = Math.floor(Math.random() * 10000);
+                    const iNewScore = Math.floor(Math.random() * 10000);
 
                     GJAPI.ScoreAdd(0, iNewScore, iNewScore + " Potatoes", null, 
                     function(pResponse)
@@ -78,7 +78,7 @@
 
             // ****************************************************************
             // USER
-            var nUserFetchCallback = 
+            const nUserFetchCallback =
             function(pResponse)
             {
                 pBody.innerHTML += "[USER] " + ("User " + pResponse.users[0].username + " (ID " + pResponse.users[0].id + ") fetched") + "<br>";
