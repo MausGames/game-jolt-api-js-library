@@ -46,7 +46,6 @@ GJAPI.bDebugMode = false;   // enable verbose console logging
 
 if(GJAPI.iGameID === 0 || GJAPI.sGameKey === "") alert("Game ID or Game Key missing!");
 
-GJAPI.sAPIold   = "https://gamejolt.com/api/game/v1";
 GJAPI.sAPI      = "https://api.gamejolt.com/api/game/v1_2";
 GJAPI.sLogName  = "[Game Jolt API]";
 GJAPI.iLogStack = 20;
@@ -99,14 +98,13 @@ GJAPI.SEND_GENERAL  = false;
 GJAPI.SendRequest = function(sURL, bSendUser, pCallback)
 {
     // forward call to extended function
-    GJAPI.SendRequestEx(sURL, bSendUser, "json", "", pCallback);
+    GJAPI.SendRequestEx(sURL, bSendUser, "json", "", "", pCallback);
 }
 
-GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
+GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, sBodyFlat, pCallback)
 {
     // add main URL, game ID and format type
-    sURL = (sBodyData ? GJAPI.sAPIold : GJAPI.sAPI)  + // Apparently the new API url breaks DataStoreFetch
-           encodeURI(sURL)                           +
+    sURL = GJAPI.sAPI + encodeURI(sURL)              +
            ((sURL.indexOf("/?") === -1) ? '?' : '&') +
            "game_id=" + GJAPI.iGameID                +
            "&format=" + sFormat;
@@ -119,7 +117,7 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, pCallback)
     }
 
     // generate MD5 signature
-    sURL += "&signature=" + hex_md5(sURL + GJAPI.sGameKey);
+    sURL += "&signature=" + hex_md5(sURL + sBodyFlat + GJAPI.sGameKey);
 
     // send off the request
     __CreateAjax(sURL, sBodyData, function(sResponse)
@@ -485,13 +483,13 @@ GJAPI.DATA_STORE_GLOBAL = 1;
 GJAPI.DataStoreSet = function(iStore, sKey, sData, pCallback)
 {
     // send set-data request
-    GJAPI.SendRequestEx("/data-store/set/?key=" + sKey, (iStore === GJAPI.DATA_STORE_USER), "json", "data=" + sData, pCallback);
+    GJAPI.SendRequestEx("/data-store/set/?key=" + sKey, (iStore === GJAPI.DATA_STORE_USER), "json", "data=" + sData, "data" + sData, pCallback);
 };
 
 GJAPI.DataStoreFetch = function(iStore, sKey, pCallback)
 {
     // send fetch-data request
-    GJAPI.SendRequestEx("/data-store/?key=" + sKey, (iStore === GJAPI.DATA_STORE_USER), "dump", "", pCallback);
+    GJAPI.SendRequestEx("/data-store/?key=" + sKey, (iStore === GJAPI.DATA_STORE_USER), "dump", "", "", pCallback);
 };
 
 GJAPI.DataStoreUpdate = function(iStore, sKey, sOperation, sValue, pCallback)
