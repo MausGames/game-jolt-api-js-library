@@ -53,28 +53,7 @@ GJAPI.iLogStack = 20;
 
 // ****************************************************************
 // utility functions
-GJAPI.asQueryParam = function()
-{
-    const asOutput = {};
-    const asList   = window.location.search.substring(1).split("&");
-
-    // loop through all parameters
-    for(let i = 0; i < asList.length; ++i)
-    {
-        // separate key from value
-        const asPair = asList[i].split("=");
-
-        // insert value into map
-        if(typeof asOutput[asPair[0]] === "undefined")
-            asOutput[asPair[0]] = asPair[1];                          // create new entry
-        else if(typeof asOutput[asPair[0]] === "string")
-            asOutput[asPair[0]] = [asOutput[asPair[0]], asPair[1]];   // extend into array
-        else
-            asOutput[asPair[0]].push(asPair[1]);                      // append to array
-    }
-
-    return asOutput;
-}();
+GJAPI.asQueryParam = new URL(window.location).searchParams();
 
 GJAPI.bOnGJ = window.location.hostname.match(/gamejolt/) ? true : false;
 
@@ -152,9 +131,9 @@ GJAPI.SendRequestEx = function(sURL, bSendUser, sFormat, sBodyData, sBodyFlat, p
 };
 
 // automatically retrieve and log in current user on Game Jolt 
-GJAPI.bLoggedIn  = (GJAPI.bAutoLogin && GJAPI.asQueryParam["gjapi_username"] && GJAPI.asQueryParam["gjapi_token"]) ? true : false;
-GJAPI.sUserName  = GJAPI.bLoggedIn ? GJAPI.asQueryParam["gjapi_username"] : "";
-GJAPI.sUserToken = GJAPI.bLoggedIn ? GJAPI.asQueryParam["gjapi_token"]    : "";
+GJAPI.bLoggedIn  = (GJAPI.bAutoLogin && GJAPI.asQueryParam.get("gjapi_username") && GJAPI.asQueryParam.get("gjapi_token")) ? true : false;
+GJAPI.sUserName  = GJAPI.bLoggedIn ? GJAPI.asQueryParam.get("gjapi_username") : "";
+GJAPI.sUserToken = GJAPI.bLoggedIn ? GJAPI.asQueryParam.get("gjapi_token")    : "";
 
 // send some information to the console
 console.info(GJAPI.asQueryParam);
